@@ -23,9 +23,9 @@
 	
 	Class.forName("org.mariadb.jdbc.Driver");
 	Connection conn = DriverManager.getConnection(
-			"jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+			"jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 	System.out.println(conn+" <-- conn");
-	PreparedStatement stmt = conn.prepareStatement("Update qna set qna_title=?, qna_content=? where qna_no=?");
+	PreparedStatement stmt = conn.prepareStatement("Update employees_qna set qna_title=?, qna_content=? where qna_no=?");
 	stmt.setString(1, qnaTitle);
 	stmt.setString(2, qnaContent);
 	stmt.setInt(3, qnaNo);

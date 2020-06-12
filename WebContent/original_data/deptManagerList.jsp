@@ -51,10 +51,10 @@
 		//2.0 db설정
 		Class.forName("org.mariadb.jdbc.Driver");
 		Connection conn = DriverManager.getConnection(
-				"jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+				"jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 		//2. 현재페이지의departments테이블 행들
 		PreparedStatement stmt1 = conn.prepareStatement(
-				"select * from dept_manager order by dept_no asc limit ?,?");
+				"select * from employees_dept_manager order by dept_no asc limit ?,?");
 		stmt1.setInt(1, beginRow); // 한페이지에 몇개씩?
 		stmt1.setInt(2, rowPerPage); // 행을 어디서부터 출력할 것인가?
 		ResultSet rs1= stmt1.executeQuery();
@@ -72,7 +72,7 @@
 		// 창넘기기
 		int lastPage = 0; // 마지막페이지 변수를 선언 후 초기화
 		int totalRow = 0; // 데이터의 총 개수 변수를 선언 후 초기화
-		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from dept_manager");
+		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from employees_dept_manager");
 		//System.out.println(stmt2+" <- stmt2");
 		ResultSet rs2 = stmt2.executeQuery();
 		if(rs2.next()){ //만약 다음페이지 값이 있다면

@@ -49,11 +49,11 @@
 		//데이터베이스 연결
 		Class.forName("org.mariadb.jdbc.Driver");
 		Connection conn = DriverManager.getConnection(
-				"jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+				"jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 		//System.out.println(conn+" <-- conn");
 		
 		PreparedStatement stmt = conn.prepareStatement(
-				"select * from dept_emp limit ?,?");
+				"select * from employees_dept_emp limit ?,?");
 		stmt.setInt(1,beginLow);
 		stmt.setInt(2,rowPerPage);
 		//System.out.println(stmt+" <-- stmt");
@@ -71,7 +71,7 @@
 		//테이블 전체행의 수
 		int lastPage = 0; //마지막페이지를 저장할 변수를 선언하고 초기화
 		int totalRow = 0; // 데이터의 총갯수를 저장할 변수로 선언하고 초기화
-		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from dept_emp");
+		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from employees_dept_emp");
 		ResultSet rs2 = stmt2.executeQuery();
 		//System.out.println(rs2+" <-- rs2");
 		if(rs2.next()){

@@ -43,9 +43,9 @@
 		//System.out.println(beginRow+" <- beginRow");
 		//db연결
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 		//System.out.println(conn+" <- conn");
-		PreparedStatement stmt1 = conn.prepareStatement("select * from titles order by emp_no asc limit ?,?"); // 쿼리작성
+		PreparedStatement stmt1 = conn.prepareStatement("select * from employees_titles order by emp_no asc limit ?,?"); // 쿼리작성
 		stmt1.setInt(1,beginRow);
 		stmt1.setInt(2,rowPerPage);
 		//System.out.println(stmt1+" <- stmt1");
@@ -63,7 +63,7 @@
 		//마지막페이지
 		int lastPage=0; // 마지막페이지를 저장할 변수 선언 후 초기화
 		int totalRow=0; // 데이터의 총개수를 저장할 변수 선언 후 초기화
-		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from titles");
+		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from employees_titles");
 		ResultSet rs2= stmt2.executeQuery();
 		if(rs2.next()){
 			totalRow= rs2.getInt("count(*)");//데이터의 총개수는 쿼리를실행한 값(=count값)을 정수로 변환시킨 값

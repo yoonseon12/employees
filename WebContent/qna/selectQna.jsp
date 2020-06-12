@@ -66,11 +66,11 @@
 		//System.out.println(qnaNo+" <-- qnaNo");
 
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/employees", "root",
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root",
 				"java1234");
 		//System.out.println(conn+" <-- conn");
 		PreparedStatement stmt1 = conn.prepareStatement(
-				"select qna_no, qna_title, qna_content, qna_user, qna_date from qna where qna_no=?");
+				"select qna_no, qna_title, qna_content, qna_user, qna_date from employees_qna where qna_no=?");
 		stmt1.setInt(1, qnaNo);
 		//System.out.println(stmt1+" <-- stmt1");
 		ResultSet rs1 = stmt1.executeQuery();
@@ -179,7 +179,7 @@
 						// select comment_no, comment from qna_comment where qna_no=
 						// limit ?,?
 						PreparedStatement stmt2 = conn.prepareStatement(
-								"select comment_no, qna_no, comment, comment_date, comment_user from qna_comment where qna_no=? order by comment_no desc");
+								"select comment_no, qna_no, comment, comment_date, comment_user from employees_comment where qna_no=? order by comment_no desc");
 						stmt2.setInt(1, qnaNo);
 						ResultSet rs2 = stmt2.executeQuery();
 						ArrayList<Comment> list = new ArrayList<Comment>();

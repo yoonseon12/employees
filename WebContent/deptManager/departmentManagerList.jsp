@@ -51,12 +51,12 @@
 		//2.0 db설정
 		Class.forName("org.mariadb.jdbc.Driver");
 		Connection conn = DriverManager.getConnection(
-				"jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+				"jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 		//2. 현재페이지의departments테이블 행들
 		String query = "SELECT a.emp_no, CONCAT(b.first_name,' ',b.last_name) as name, a.dept_no, c.dept_name, a.from_date, a.to_date ";
-			query += "FROM dept_manager a ";
-			query += "INNER JOIN employees b ON a.emp_no = b.emp_no ";
-			query += "INNER JOIN departments c ON a.dept_no = c.dept_no ";
+			query += "FROM employees_dept_manager a ";
+			query += "INNER JOIN employees_employees b ON a.emp_no = b.emp_no ";
+			query += "INNER JOIN employees_departments c ON a.dept_no = c.dept_no ";
 			query += "ORDER BY a.to_date desc ";
 			query += "LIMIT ?, ?";
 		PreparedStatement stmt1 = conn.prepareStatement(query);
@@ -79,7 +79,7 @@
 		// 창넘기기
 		int lastPage = 0;
 		int totalRow = 0;
-		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from dept_manager");
+		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from employees_dept_manager");
 		//System.out.println(stmt2+" <- stmt2");
 		ResultSet rs2 = stmt2.executeQuery();
 		if(rs2.next()){ //만약 다음페이지 값이 있다면

@@ -40,9 +40,9 @@
 		System.out.println(rowPerPage+" <-- rowPerPage");
 		
 		//Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 		//System.out.println(conn+" <-- conn");
-		PreparedStatement stmt1 = conn.prepareStatement("select qna_no, qna_title, qna_content, qna_user, qna_date from qna where qna_no=?");
+		PreparedStatement stmt1 = conn.prepareStatement("select qna_no, qna_title, qna_content, qna_user, qna_date from employees_qna where qna_no=?");
 		stmt1.setInt(1, qnaNo);
 		//System.out.println(stmt1+" <-- stmt1");
 		ResultSet rs1 = stmt1.executeQuery();

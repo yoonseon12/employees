@@ -30,11 +30,11 @@
 
 		Class.forName("org.mariadb.jdbc.Driver");
 		Connection conn = null; // 변수안에 값을 넣기전에일단 초기화 시킴
-		conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+		conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 		String query = "SELECT d.dept_no, d.dept_name, AVG(s.salary) 'avgSalary' ";
-		query += "FROM departments d ";
-		query += "INNER JOIN dept_emp de ";
-		query += "INNER JOIN salaries s ";
+		query += "FROM employees_departments d ";
+		query += "INNER JOIN employees_dept_emp de ";
+		query += "INNER JOIN employees_salaries s ";
 		query += "ON d.dept_no = de.dept_no AND de.emp_no = s.emp_no ";
 		query += "GROUP BY d.dept_name ";
 		query += "ORDER BY d.dept_no";

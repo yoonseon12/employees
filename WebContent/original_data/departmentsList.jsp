@@ -44,12 +44,12 @@
 		//2.0 database
 		Class.forName("org.mariadb.jdbc.Driver");
 		Connection conn = null; // 변수안에 값을 넣기전에일단 초기화 시킴
-		conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+		conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 		//System.out.println(conn+" <-- conn");
 		//2. 현재페이지의 departments 테이블 행들
 		ArrayList<Departments> list = new ArrayList<Departments>();//현재 페이지의 department에 행을 저장하려고 만듬
 		PreparedStatement stmt1 = null;
-		stmt1 = conn.prepareStatement("select * from departments order by dept_no asc limit ?,?");
+		stmt1 = conn.prepareStatement("select * from employees_departments order by dept_no asc limit ?,?");
 		stmt1.setInt(1, beginRow); // 처음부터
 		stmt1.setInt(2, rowPerPage); // ??까지
 		//System.out.println(stmt1+" <-- stmt1");
@@ -67,7 +67,7 @@
 		int lastPage = 0;
 		int totalRow = 0;
 		PreparedStatement stmt2 = null;
-		stmt2 = conn.prepareStatement("select count(*) from departments");
+		stmt2 = conn.prepareStatement("select count(*) from employees_departments");
 		//System.out.println(stmt2+" <--stmt2");
 		ResultSet rs2 = null;
 		rs2 = stmt2.executeQuery();

@@ -40,8 +40,8 @@
 		System.out.println(currentPage+" <- currentPage");
 		//db설정
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/employees", "root", "java1234");
-		PreparedStatement stmt1 = conn.prepareStatement("select * from salaries order by emp_no asc limit ?,?");
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
+		PreparedStatement stmt1 = conn.prepareStatement("select * from employees_salaries order by emp_no asc limit ?,?");
 		stmt1.setInt(1, beginRow);
 		stmt1.setInt(2, rowPerPage);
 		System.out.println(stmt1+" <- stmt1");
@@ -59,7 +59,7 @@
 		//마지막페이지 설정
 		int lastPage = 0; // 마지막페이지
 		int totalRow = 0; // 데이터의 총 개수
-		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from salaries"); // 데이터의 총 개수를 가져올 쿼리입력
+		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from employees_salaries"); // 데이터의 총 개수를 가져올 쿼리입력
 		System.out.println(stmt2+" <- stmt2");
 		ResultSet rs2 = stmt2.executeQuery();
 		if(rs2.next()){

@@ -62,35 +62,35 @@
 		
 		//마리아db
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 		PreparedStatement stmt1 = null;
 		
 		//검색어 유무에 따른 동적쿼리
 		if(searchWord.equals("")){
-			stmt1 = conn.prepareStatement("select qna_no, qna_title, qna_user, qna_date from qna order by qna_no desc limit ?, ?");
+			stmt1 = conn.prepareStatement("select qna_no, qna_title, qna_user, qna_date from employees_qna order by qna_no desc limit ?, ?");
 			stmt1.setInt(1,beginRow);
 			stmt1.setInt(2,rowPerPage);
 		} else if(selectMenu.equals("title")){
 			stmt1 = conn.prepareStatement(
-					"select qna_no, qna_title, qna_user, qna_date from qna where qna_title like ? order by qna_no desc limit ?,?");
+					"select qna_no, qna_title, qna_user, qna_date from employees_qna where qna_title like ? order by qna_no desc limit ?,?");
 			stmt1.setString(1,"%"+searchWord+"%");
 			stmt1.setInt(2,beginRow);
 			stmt1.setInt(3,rowPerPage);
 		} else if(selectMenu.equals("user")){
 			stmt1 = conn.prepareStatement(
-					"select qna_no, qna_title, qna_user, qna_date from qna where qna_user like ? order by qna_no desc limit ?,?");
+					"select qna_no, qna_title, qna_user, qna_date from employees_qna where qna_user like ? order by qna_no desc limit ?,?");
 			stmt1.setString(1,"%"+searchWord+"%");
 			stmt1.setInt(2,beginRow);
 			stmt1.setInt(3,rowPerPage);
 		} else if(selectMenu.equals("content")){
 			stmt1 = conn.prepareStatement(
-					"select qna_no, qna_title, qna_user, qna_date from qna where qna_content like ? order by qna_no desc limit ?,?");
+					"select qna_no, qna_title, qna_user, qna_date from employees_qna where qna_content like ? order by qna_no desc limit ?,?");
 			stmt1.setString(1,"%"+searchWord+"%");
 			stmt1.setInt(2,beginRow);
 			stmt1.setInt(3,rowPerPage);
 		} else if(selectMenu.equals("titleContent")){
 			stmt1 = conn.prepareStatement(
-					"select qna_no, qna_title, qna_user, qna_date from qna where qna_content like ? or qna_title like ? order by qna_no desc limit ?,?");
+					"select qna_no, qna_title, qna_user, qna_date from qna where employees_qna_content like ? or qna_title like ? order by qna_no desc limit ?,?");
 			stmt1.setString(1,"%"+searchWord+"%");
 			stmt1.setString(2,"%"+searchWord+"%");
 			stmt1.setInt(3,beginRow);
@@ -114,18 +114,18 @@
 		int totalRow=0; // 데이터의 총갯수
 		PreparedStatement stmt2 = null;
 		if(searchWord.equals("")){ // 동적쿼리
-			stmt2 = conn.prepareStatement("select count(*) from qna");
+			stmt2 = conn.prepareStatement("select count(*) from employees_qna");
 		}else if(selectMenu.equals("title")){
-			stmt2 = conn.prepareStatement("select count(*) from qna where qna_title like ?");
+			stmt2 = conn.prepareStatement("select count(*) from employees_qna where qna_title like ?");
 			stmt2.setString(1,"%"+searchWord+"%");
 		}else if(selectMenu.equals("user")){
-			stmt2 = conn.prepareStatement("select count(*) from qna where qna_user like ?");
+			stmt2 = conn.prepareStatement("select count(*) from employees_qna where qna_user like ?");
 			stmt2.setString(1,"%"+searchWord+"%");
 		}else if(selectMenu.equals("content")){
-			stmt2 = conn.prepareStatement("select count(*) from qna where qna_content like ?");
+			stmt2 = conn.prepareStatement("select count(*) from employees_qna where qna_content like ?");
 			stmt2.setString(1,"%"+searchWord+"%");
 		}else if(selectMenu.equals("titleContent")){
-			stmt2 = conn.prepareStatement("select count(*) from qna where qna_user like ? or qna_content like ?");
+			stmt2 = conn.prepareStatement("select count(*) from employees_qna where qna_user like ? or qna_content like ?");
 			stmt2.setString(1,"%"+searchWord+"%");
 			stmt2.setString(2,"%"+searchWord+"%");
 		}

@@ -31,8 +31,8 @@
 		
 		Class.forName("org.mariadb.jdbc.Driver");
 		Connection conn = DriverManager.getConnection(
-				"jdbc:mariadb://localhost:3306/employees", "root", "java1234");
-		String query = "SELECT d2.dept_no, d1.dept_name, d2.cnt FROM departments d1 INNER JOIN (SELECT dept_no, COUNT(*) cnt FROM dept_emp WHERE to_date = '9999-01-01' GROUP BY dept_no) d2 ON d1.dept_no = d2.dept_no ORDER BY d2.dept_no";
+				"jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
+		String query = "SELECT d2.dept_no, d1.dept_name, d2.cnt FROM employees_departments d1 INNER JOIN (SELECT dept_no, COUNT(*) cnt FROM employees_dept_emp WHERE to_date = '9999-01-01' GROUP BY dept_no) d2 ON d1.dept_no = d2.dept_no ORDER BY d2.dept_no";
 		PreparedStatement stmt = conn.prepareStatement(query);
 		ResultSet rs= stmt.executeQuery();
 		//System.out.println(stmt1+" <-- stmt1");

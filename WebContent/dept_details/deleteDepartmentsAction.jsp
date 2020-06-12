@@ -8,9 +8,9 @@
 	System.out.println(sendUrl+" <-- sendUrl");
 	Class.forName("org.mariadb.jdbc.Driver");
 	Connection conn = DriverManager.getConnection(
-			"jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+			"jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 	System.out.println(conn+" <-- conn"); //연결 디버깅
-	PreparedStatement stmt = conn.prepareStatement("delete from departments where dept_no=?");
+	PreparedStatement stmt = conn.prepareStatement("delete from employees_departments where dept_no=?");
 	stmt.setString(1, deptNo);
 	System.out.println(stmt+" <-- stmt");
 	stmt.executeUpdate();

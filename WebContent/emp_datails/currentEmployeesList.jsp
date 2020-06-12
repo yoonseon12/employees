@@ -70,14 +70,14 @@
 				
 		//마리아디비 설정
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 		//System.out.println(conn+" <--conn");
 		PreparedStatement stmt1 = null;
 		if(searchWord.equals("")){
 			String query="";
 			query += "SELECT emp_no, CONCAT(first_name, ' ', last_name) AS name, birth_date, gender, hire_date ";
-			query += "FROM employees "; 
-			query += "WHERE emp_no IN(SELECT emp_no FROM dept_emp "; 
+			query += "FROM employees_employees "; 
+			query += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
 			query += "WHERE to_date = '9999-01-01') ";
 			query += "ORDER BY emp_no limit ?,?;";
 			stmt1 = conn.prepareStatement(query);
@@ -86,8 +86,8 @@
 		} else if(selectMenu.equals("firstName")){
 			String query="";
 			query += "SELECT emp_no, CONCAT(first_name, ' ', last_name) AS name, birth_date, gender, hire_date ";
-			query += "FROM employees "; 
-			query += "WHERE emp_no IN(SELECT emp_no FROM dept_emp "; 
+			query += "FROM employees_employees "; 
+			query += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
 			query += "WHERE to_date = '9999-01-01') ";
 			query += "AND first_name LIKE ? ";
 			query += "ORDER BY emp_no limit ?,?;";
@@ -98,8 +98,8 @@
 		} else if(selectMenu.equals("lastName")){
 			String query="";
 			query += "SELECT emp_no, CONCAT(first_name, ' ', last_name) AS name, birth_date, gender, hire_date ";
-			query += "FROM employees "; 
-			query += "WHERE emp_no IN(SELECT emp_no FROM dept_emp "; 
+			query += "FROM employees_employees "; 
+			query += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
 			query += "WHERE to_date = '9999-01-01') ";
 			query += "AND last_name LIKE ? ";
 			query += "ORDER BY emp_no limit ?,?;";
@@ -130,15 +130,15 @@
 		if(searchWord.equals("")){
 			String query2="";
 			query2 += "SELECT COUNT(*) ";
-			query2 += "FROM employees "; 
-			query2 += "WHERE emp_no IN(SELECT emp_no FROM dept_emp "; 
+			query2 += "FROM employees_employees "; 
+			query2 += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
 			query2 += "WHERE to_date = '9999-01-01')";
 			stmt2 = conn.prepareStatement(query2);
 		}else if(selectMenu.equals("firstName")){
 			String query2="";
 			query2 += "SELECT COUNT(*) ";
-			query2 += "FROM employees "; 
-			query2 += "WHERE emp_no IN(SELECT emp_no FROM dept_emp "; 
+			query2 += "FROM employees_employees "; 
+			query2 += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
 			query2 += "WHERE to_date = '9999-01-01') ";
 			query2 += "AND first_name LIKE ?";
 			stmt2 = conn.prepareStatement(query2);
@@ -146,8 +146,8 @@
 		}else if(selectMenu.equals("lastName")){
 			String query2="";
 			query2 += "SELECT COUNT(*) ";
-			query2 += "FROM employees "; 
-			query2 += "WHERE emp_no IN(SELECT emp_no FROM dept_emp "; 
+			query2 += "FROM employees_employees "; 
+			query2 += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
 			query2 += "WHERE to_date = '9999-01-01') ";
 			query2 += "AND last_name LIKE ?";
 			stmt2 = conn.prepareStatement(query2);

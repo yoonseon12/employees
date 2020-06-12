@@ -15,7 +15,7 @@
 	int commentNo = Integer.parseInt(request.getParameter("commentNo"));
 	//마리아 db설정
 	Class.forName("org.mariadb.jdbc.Driver");
-	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 	
 	String delPw = ""; // 입력한 비밀번호를 받을 변수를 선언하고 초기화
 	if(request.getParameter("delPw")!=""){ // 입력한 비밀번호가 있다면
@@ -25,7 +25,7 @@
 		return;
 	}
 	System.out.println(delPw+" <-- delPw");
-	PreparedStatement stmt1 = conn.prepareStatement("SELECT comment_pw FROM qna_comment WHERE comment_no=?");
+	PreparedStatement stmt1 = conn.prepareStatement("SELECT comment_pw FROM employees_comment WHERE comment_no=?");
 	stmt1.setInt(1,commentNo);
 	ResultSet rs1= stmt1.executeQuery();
 	String realPw = ""; // 데이터베이스에 있는 비밀번호를 담을 변수를 선언 후 초기화
@@ -34,7 +34,7 @@
 		realPw = rs1.getString(1);
 	}
 	if(delPw.equals(realPw)){ 
-		PreparedStatement stmt2 = conn.prepareStatement("delete from qna_comment where comment_no=?");
+		PreparedStatement stmt2 = conn.prepareStatement("delete from employees_comment where comment_no=?");
 		stmt2.setInt(1,commentNo);
 		stmt2.executeQuery();
 	}else{

@@ -9,9 +9,9 @@
 	// dept_no ?
 	// dept_no를 구하는 알고리즘
 	Class.forName("org.mariadb.jdbc.Driver");
-	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 	PreparedStatement stmt = conn.prepareStatement(
-			"select dept_no from departments order by dept_no desc limit 0,1");
+			"select dept_no from employees_departments order by dept_no desc limit 0,1");
 	//select max(dept_no) from departments
 	ResultSet rs = stmt.executeQuery();
 	String deptNo = "";
@@ -43,7 +43,7 @@
 	//dept_name
 	String deptName = request.getParameter("deptName");
 	PreparedStatement stmt1 = conn.prepareStatement(
-			"insert into departments (dept_no, dept_name) values(?,?)");
+			"insert into employees_departments (dept_no, dept_name) values(?,?)");
 	stmt1.setString(1,nextDeptNo2);
 	stmt1.setString(2,deptName);
 	stmt1.executeUpdate();

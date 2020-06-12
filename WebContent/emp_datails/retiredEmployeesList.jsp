@@ -56,15 +56,15 @@
 				
 		//마리아디비 설정
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/employees", "root", "java1234");
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
 		System.out.println(conn+" <--conn");
 		PreparedStatement stmt1 = null;
 		if(searchWord.equals("")){
 			String query = "SELECT a.emp_no, CONCAT(a.first_name, ' ', a.last_name) AS NAME, a.birth_date, a.gender, a.hire_date ,b.to_date ";
-			query += "FROM employees a ";
-		 	query += "INNER JOIN dept_emp b ";
+			query += "FROM employees_employees a ";
+		 	query += "INNER JOIN employees_dept_emp b ";
 			query += "ON a.emp_no = b.emp_no ";
-			query += "WHERE a.emp_no  NOT IN(SELECT emp_no FROM dept_emp ";
+			query += "WHERE a.emp_no  NOT IN(SELECT emp_no FROM employees_dept_emp ";
 			query += "WHERE to_date = '9999-01-01') ";
 			query += "LIMIT ?, ?";
 			stmt1 = conn.prepareStatement(query);
@@ -72,10 +72,10 @@
 			stmt1.setInt(2, rowPerPage);
 		} else if(selectMenu.equals("firstName")){
 			String query = "SELECT a.emp_no, CONCAT(a.first_name, ' ', a.last_name) AS NAME, a.birth_date, a.gender, a.hire_date ,b.to_date ";
-			query += "FROM employees a ";
-		 	query += "INNER JOIN dept_emp b ";
+			query += "FROM employees_employees a ";
+		 	query += "INNER JOIN employees_dept_emp b ";
 			query += "ON a.emp_no = b.emp_no ";
-			query += "WHERE a.emp_no  NOT IN(SELECT emp_no FROM dept_emp ";
+			query += "WHERE a.emp_no  NOT IN(SELECT emp_no FROM employees_dept_emp ";
 			query += "WHERE to_date = '9999-01-01') ";
 			query += "AND first_name LIKE ? ";
 			query += "LIMIT ?, ?";
@@ -85,10 +85,10 @@
 			stmt1.setInt(3, rowPerPage);
 		} else if(selectMenu.equals("lastName")){
 			String query = "SELECT a.emp_no, CONCAT(a.first_name, ' ', a.last_name) AS NAME, a.birth_date, a.gender, a.hire_date ,b.to_date ";
-			query += "FROM employees a ";
-		 	query += "INNER JOIN dept_emp b ";
+			query += "FROM employees_employees a ";
+		 	query += "INNER JOIN employees_dept_emp b ";
 			query += "ON a.emp_no = b.emp_no ";
-			query += "WHERE a.emp_no  NOT IN(SELECT emp_no FROM dept_emp ";
+			query += "WHERE a.emp_no  NOT IN(SELECT emp_no FROM employees_dept_emp ";
 			query += "WHERE to_date = '9999-01-01') ";
 			query += "AND last_name LIKE ? ";
 			query += "LIMIT ?, ?";
@@ -118,28 +118,28 @@
 		PreparedStatement stmt2 = null;
 		if(searchWord.equals("")){
 			String query2 = "SELECT COUNT(*) ";
-			query2 += "FROM employees a ";
-			query2 += "INNER JOIN dept_emp b ";
+			query2 += "FROM employees_employees a ";
+			query2 += "INNER JOIN employees_dept_emp b ";
 			query2 += "ON a.emp_no = b.emp_no ";
-			query2 += "WHERE a.emp_no  not IN(SELECT emp_no FROM dept_emp  ";
+			query2 += "WHERE a.emp_no  not IN(SELECT emp_no FROM employees_dept_emp  ";
 			query2 += "WHERE to_date = '9999-01-01')";
 			stmt2 = conn.prepareStatement(query2);
 		} else if(selectMenu.equals("firstName")){
 			String query2 = "SELECT COUNT(*) ";
-			query2 += "FROM employees a ";
-			query2 += "INNER JOIN dept_emp b ";
+			query2 += "FROM employees_employees a ";
+			query2 += "INNER JOIN employees_dept_emp b ";
 			query2 += "ON a.emp_no = b.emp_no ";
-			query2 += "WHERE a.emp_no  not IN(SELECT emp_no FROM dept_emp  ";
+			query2 += "WHERE a.emp_no  not IN(SELECT emp_no FROM employees_dept_emp  ";
 			query2 += "WHERE to_date = '9999-01-01') ";
 			query2 += "AND first_name LIKE ?";
 			stmt2 = conn.prepareStatement(query2);
 			stmt2.setString(1,"%"+searchWord+"%");
 		} else if(selectMenu.equals("lastName")){
 			String query2 = "SELECT COUNT(*) ";
-			query2 += "FROM employees a ";
-			query2 += "INNER JOIN dept_emp b ";
+			query2 += "FROM employees_employees a ";
+			query2 += "INNER JOIN employees_dept_emp b ";
 			query2 += "ON a.emp_no = b.emp_no ";
-			query2 += "WHERE a.emp_no  not IN(SELECT emp_no FROM dept_emp  ";
+			query2 += "WHERE a.emp_no  not IN(SELECT emp_no FROM employees_dept_emp  ";
 			query2 += "WHERE to_date = '9999-01-01') ";
 			query2 += "AND last_name LIKE ?";
 			stmt2 = conn.prepareStatement(query2);
