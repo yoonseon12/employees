@@ -43,8 +43,7 @@
 		int beginRow = (currentPage - 1) * rowPerPage; // 행을 어디서부터 출력하냐
 		//2.0 database
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = null; // 변수안에 값을 넣기전에일단 초기화 시킴
-		conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
 		//System.out.println(conn+" <-- conn");
 		//2. 현재페이지의 departments 테이블 행들
 		ArrayList<Departments> list = new ArrayList<Departments>();//현재 페이지의 department에 행을 저장하려고 만듬

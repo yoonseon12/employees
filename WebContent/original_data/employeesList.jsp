@@ -46,8 +46,7 @@
 		//System.out.println(beginRow);
 		//2.0 database 설정
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection(
-				"jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
 		//2. 현재 페이지의 departments 테이블 행들
 		//System.out.println(conn+" <-- conn");
 		PreparedStatement stmt1 = null;

@@ -24,7 +24,7 @@
 	
 	// qnaNo,
 	Class.forName("org.mariadb.jdbc.Driver");
-	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
+	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
 	PreparedStatement stmt1 = conn.prepareStatement("select max(qna_no) from employees_qna");
 	System.out.println(stmt1+" <- stmt1");
 	ResultSet rs1 = stmt1.executeQuery();

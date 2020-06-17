@@ -9,7 +9,7 @@
 	// dept_no ?
 	// dept_no를 구하는 알고리즘
 	Class.forName("org.mariadb.jdbc.Driver");
-	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
+	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
 	PreparedStatement stmt = conn.prepareStatement(
 			"select dept_no from employees_departments order by dept_no desc limit 0,1");
 	//select max(dept_no) from departments

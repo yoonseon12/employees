@@ -19,7 +19,7 @@
 			.main{
 				margin: 30px auto ;
 				padding : 20px;
-				width: 800px;
+				width: 900px;
 				border : 1px solid #343A40;
 			}
 			p{
@@ -44,7 +44,7 @@
 					<span style="font-size:20px;"><strong>프로젝트 소개</strong></span>
 				</div>
 				<div class="text-center"style="margin-bottom:50px;">
-					<p>MYSQL에서 제공하는 employees샘플 데이터베이스를 사용하여 model1방식으로 구현하였습니다.</p>
+					<p>MYSQL에서 제공하는 employees샘플 데이터베이스를 이용해 JSP를 사용하여 model1방식으로 구현하였습니다.</p>
 					<p>제공된 기존 데이터들중 필요한 정보들을 확인할 수 있도록 JOIN하여  리스트를 구성하였습니다.</p>
 				</div>
 				<!-- 개발 프로그램 -->

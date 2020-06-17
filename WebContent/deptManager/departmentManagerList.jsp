@@ -50,8 +50,7 @@
 		
 		//2.0 db설정
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection(
-				"jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
 		//2. 현재페이지의departments테이블 행들
 		String query = "SELECT a.emp_no, CONCAT(b.first_name,' ',b.last_name) as name, a.dept_no, c.dept_name, a.from_date, a.to_date ";
 			query += "FROM employees_dept_manager a ";

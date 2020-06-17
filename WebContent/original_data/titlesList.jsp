@@ -43,7 +43,7 @@
 		//System.out.println(beginRow+" <- beginRow");
 		//db연결
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
 		//System.out.println(conn+" <- conn");
 		PreparedStatement stmt1 = conn.prepareStatement("select * from employees_titles order by emp_no asc limit ?,?"); // 쿼리작성
 		stmt1.setInt(1,beginRow);

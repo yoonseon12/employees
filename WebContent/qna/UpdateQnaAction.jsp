@@ -22,8 +22,7 @@
 	System.out.println(qnaContent+" <-- qnaContent");
 	
 	Class.forName("org.mariadb.jdbc.Driver");
-	Connection conn = DriverManager.getConnection(
-			"jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
+	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
 	System.out.println(conn+" <-- conn");
 	PreparedStatement stmt = conn.prepareStatement("Update employees_qna set qna_title=?, qna_content=? where qna_no=?");
 	stmt.setString(1, qnaTitle);

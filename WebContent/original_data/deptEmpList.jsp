@@ -48,8 +48,7 @@
 		int beginLow = (currentPage-1)*10; // 데이터를 몇번째부터 출력할건지
 		//데이터베이스 연결
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection(
-				"jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
 		//System.out.println(conn+" <-- conn");
 		
 		PreparedStatement stmt = conn.prepareStatement(

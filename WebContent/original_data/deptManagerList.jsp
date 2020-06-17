@@ -50,8 +50,7 @@
 		
 		//2.0 db설정
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection(
-				"jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
+		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
 		//2. 현재페이지의departments테이블 행들
 		PreparedStatement stmt1 = conn.prepareStatement(
 				"select * from employees_dept_manager order by dept_no asc limit ?,?");

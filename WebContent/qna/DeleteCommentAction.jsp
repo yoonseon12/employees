@@ -15,7 +15,7 @@
 	int commentNo = Integer.parseInt(request.getParameter("commentNo"));
 	//마리아 db설정
 	Class.forName("org.mariadb.jdbc.Driver");
-	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/yoonseon12", "root", "java1234");
+	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
 	
 	String delPw = ""; // 입력한 비밀번호를 받을 변수를 선언하고 초기화
 	if(request.getParameter("delPw")!=""){ // 입력한 비밀번호가 있다면
