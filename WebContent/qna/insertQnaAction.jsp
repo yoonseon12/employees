@@ -24,33 +24,44 @@
 	
 	// qnaNo,
 	Class.forName("org.mariadb.jdbc.Driver");
-	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-	PreparedStatement stmt1 = conn.prepareStatement("select max(qna_no) from employees_qna");
-	System.out.println(stmt1+" <- stmt1");
-	ResultSet rs1 = stmt1.executeQuery();
-	System.out.println(rs1+" <- rs1");
-	
-	int qnaNo=1;
-	// rs1 값이 있으면 qnaNo를 그 값의 +1
-	// rs1 값이 없으면(else) qnaNo = 1
-	if(rs1.next()){
-		qnaNo=rs1.getInt("max(qna_no)") + 1 ;
+	Connection conn = null;
+	PreparedStatement stmt1 = null;
+	PreparedStatement stmt2 = null;
+	ResultSet rs = null;
+	try{
+		conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+		stmt1 = conn.prepareStatement("select max(qna_no) from employees_qna");
+		System.out.println(stmt1+" <- stmt1");
+		rs = stmt1.executeQuery();
+		System.out.println(rs+" <- rs");
+		
+		int qnaNo=1;
+		// rs1 값이 있으면 qnaNo를 그 값의 +1
+		// rs1 값이 없으면(else) qnaNo = 1
+		if(rs.next()){
+			qnaNo=rs.getInt("max(qna_no)") + 1 ;
+		}
+		System.out.println(qnaNo+" <- qnaNo");
+		
+		// qnaDate : sql문에서 now()함수를 사용
+		/* 
+			insert into qna(qna_no, qna_title, qna_content, qna_user, qna_pw, qna_date) values(?, ?, ?, ?, ?, now());
+		*/
+		stmt2 = conn.prepareStatement(
+				"insert into employees_qna(qna_no, qna_title, qna_content, qna_user, qna_pw, qna_date, qna_ip) values(?, ?, ?, ?, ?, now(), ?)");
+		stmt2.setInt(1,qnaNo);
+		stmt2.setString(2,qnaTitle);
+		stmt2.setString(3,qnaContent);
+		stmt2.setString(4,qnaUser);
+		stmt2.setString(5,qnaPw);
+		stmt2.setString(6,qnaIp);
+		stmt2.executeQuery();
+		
+		response.sendRedirect(request.getContextPath()+"/qna/qnaList.jsp");
+	} finally{
+		rs.close();
+		stmt2.close();
+		stmt1.close();
+		conn.close();
 	}
-	System.out.println(qnaNo+" <- qnaNo");
-	
-	// qnaDate : sql문에서 now()함수를 사용
-	/* 
-		insert into qna(qna_no, qna_title, qna_content, qna_user, qna_pw, qna_date) values(?, ?, ?, ?, ?, now());
-	*/
-	PreparedStatement stmt2 = conn.prepareStatement(
-			"insert into employees_qna(qna_no, qna_title, qna_content, qna_user, qna_pw, qna_date, qna_ip) values(?, ?, ?, ?, ?, now(), ?)");
-	stmt2.setInt(1,qnaNo);
-	stmt2.setString(2,qnaTitle);
-	stmt2.setString(3,qnaContent);
-	stmt2.setString(4,qnaUser);
-	stmt2.setString(5,qnaPw);
-	stmt2.setString(6,qnaIp);
-	stmt2.executeQuery();
-	
-	response.sendRedirect(request.getContextPath()+"/qna/qnaList.jsp");
 %>

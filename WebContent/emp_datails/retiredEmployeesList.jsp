@@ -56,104 +56,108 @@
 				
 		//마리아디비 설정
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		System.out.println(conn+" <--conn");
+		Connection conn = null;
 		PreparedStatement stmt1 = null;
-		if(searchWord.equals("")){
-			String query = "SELECT a.emp_no, CONCAT(a.first_name, ' ', a.last_name) AS NAME, a.birth_date, a.gender, a.hire_date ,b.to_date ";
-			query += "FROM employees_employees a ";
-		 	query += "INNER JOIN employees_dept_emp b ";
-			query += "ON a.emp_no = b.emp_no ";
-			query += "WHERE a.emp_no  NOT IN(SELECT emp_no FROM employees_dept_emp ";
-			query += "WHERE to_date = '9999-01-01') ";
-			query += "LIMIT ?, ?";
-			stmt1 = conn.prepareStatement(query);
-			stmt1.setInt(1, beginRow);
-			stmt1.setInt(2, rowPerPage);
-		} else if(selectMenu.equals("firstName")){
-			String query = "SELECT a.emp_no, CONCAT(a.first_name, ' ', a.last_name) AS NAME, a.birth_date, a.gender, a.hire_date ,b.to_date ";
-			query += "FROM employees_employees a ";
-		 	query += "INNER JOIN employees_dept_emp b ";
-			query += "ON a.emp_no = b.emp_no ";
-			query += "WHERE a.emp_no  NOT IN(SELECT emp_no FROM employees_dept_emp ";
-			query += "WHERE to_date = '9999-01-01') ";
-			query += "AND first_name LIKE ? ";
-			query += "LIMIT ?, ?";
-			stmt1 = conn.prepareStatement(query);
-			stmt1.setString(1,"%"+searchWord+"%");
-			stmt1.setInt(2, beginRow);
-			stmt1.setInt(3, rowPerPage);
-		} else if(selectMenu.equals("lastName")){
-			String query = "SELECT a.emp_no, CONCAT(a.first_name, ' ', a.last_name) AS NAME, a.birth_date, a.gender, a.hire_date ,b.to_date ";
-			query += "FROM employees_employees a ";
-		 	query += "INNER JOIN employees_dept_emp b ";
-			query += "ON a.emp_no = b.emp_no ";
-			query += "WHERE a.emp_no  NOT IN(SELECT emp_no FROM employees_dept_emp ";
-			query += "WHERE to_date = '9999-01-01') ";
-			query += "AND last_name LIKE ? ";
-			query += "LIMIT ?, ?";
-			stmt1 = conn.prepareStatement(query);
-			stmt1.setString(1,"%"+searchWord+"%");
-			stmt1.setInt(2, beginRow);
-			stmt1.setInt(3, rowPerPage);
-		}
-		System.out.println(stmt1+" <-- stmt1");
-		ResultSet rs1 = stmt1.executeQuery();
-		ArrayList<RetiredEmployees> list = new ArrayList<RetiredEmployees>();
-		while(rs1.next()){
-			RetiredEmployees a = new RetiredEmployees();
-			a.empNo = rs1.getInt("a.emp_no");
-			a.name = rs1.getString("name");
-			a.birthDate = rs1.getString("a.birth_date");
-			a.gender = rs1.getString("a.gender");;
-			a.hireDate = rs1.getString("a.hire_date");
-			a.toDate = rs1.getString("b.to_date");
-			list.add(a);
-		}
-		System.out.println(list.size()+" <-- list.size");
-		
-		// 페이징
-		int lastPage=0;
-		int totalRow = 0;
 		PreparedStatement stmt2 = null;
-		if(searchWord.equals("")){
-			String query2 = "SELECT COUNT(*) ";
-			query2 += "FROM employees_employees a ";
-			query2 += "INNER JOIN employees_dept_emp b ";
-			query2 += "ON a.emp_no = b.emp_no ";
-			query2 += "WHERE a.emp_no  not IN(SELECT emp_no FROM employees_dept_emp  ";
-			query2 += "WHERE to_date = '9999-01-01')";
-			stmt2 = conn.prepareStatement(query2);
-		} else if(selectMenu.equals("firstName")){
-			String query2 = "SELECT COUNT(*) ";
-			query2 += "FROM employees_employees a ";
-			query2 += "INNER JOIN employees_dept_emp b ";
-			query2 += "ON a.emp_no = b.emp_no ";
-			query2 += "WHERE a.emp_no  not IN(SELECT emp_no FROM employees_dept_emp  ";
-			query2 += "WHERE to_date = '9999-01-01') ";
-			query2 += "AND first_name LIKE ?";
-			stmt2 = conn.prepareStatement(query2);
-			stmt2.setString(1,"%"+searchWord+"%");
-		} else if(selectMenu.equals("lastName")){
-			String query2 = "SELECT COUNT(*) ";
-			query2 += "FROM employees_employees a ";
-			query2 += "INNER JOIN employees_dept_emp b ";
-			query2 += "ON a.emp_no = b.emp_no ";
-			query2 += "WHERE a.emp_no  not IN(SELECT emp_no FROM employees_dept_emp  ";
-			query2 += "WHERE to_date = '9999-01-01') ";
-			query2 += "AND last_name LIKE ?";
-			stmt2 = conn.prepareStatement(query2);
-			stmt2.setString(1,"%"+searchWord+"%");
-		}
-		ResultSet rs2 = stmt2.executeQuery();
-		if(rs2.next()){
-			totalRow = rs2.getInt("count(*)");
-		}
-		System.out.println(totalRow+" <-- totalRow");
-		lastPage = totalRow/rowPerPage;
-		if(totalRow%rowPerPage != 0){
-			lastPage+=1;
-		}
+		ResultSet rs1 = null;
+		ResultSet rs2 = null;
+		ArrayList<RetiredEmployees> list = null;
+		try{
+			conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			if(searchWord.equals("")){
+				String query = "SELECT a.emp_no, CONCAT(a.first_name, ' ', a.last_name) AS NAME, a.birth_date, a.gender, a.hire_date ,b.to_date ";
+				query += "FROM employees_employees a ";
+			 	query += "INNER JOIN employees_dept_emp b ";
+				query += "ON a.emp_no = b.emp_no ";
+				query += "WHERE a.emp_no  NOT IN(SELECT emp_no FROM employees_dept_emp ";
+				query += "WHERE to_date = '9999-01-01') ";
+				query += "LIMIT ?, ?";
+				stmt1 = conn.prepareStatement(query);
+				stmt1.setInt(1, beginRow);
+				stmt1.setInt(2, rowPerPage);
+			} else if(selectMenu.equals("firstName")){
+				String query = "SELECT a.emp_no, CONCAT(a.first_name, ' ', a.last_name) AS NAME, a.birth_date, a.gender, a.hire_date ,b.to_date ";
+				query += "FROM employees_employees a ";
+			 	query += "INNER JOIN employees_dept_emp b ";
+				query += "ON a.emp_no = b.emp_no ";
+				query += "WHERE a.emp_no  NOT IN(SELECT emp_no FROM employees_dept_emp ";
+				query += "WHERE to_date = '9999-01-01') ";
+				query += "AND first_name LIKE ? ";
+				query += "LIMIT ?, ?";
+				stmt1 = conn.prepareStatement(query);
+				stmt1.setString(1,"%"+searchWord+"%");
+				stmt1.setInt(2, beginRow);
+				stmt1.setInt(3, rowPerPage);
+			} else if(selectMenu.equals("lastName")){
+				String query = "SELECT a.emp_no, CONCAT(a.first_name, ' ', a.last_name) AS NAME, a.birth_date, a.gender, a.hire_date ,b.to_date ";
+				query += "FROM employees_employees a ";
+			 	query += "INNER JOIN employees_dept_emp b ";
+				query += "ON a.emp_no = b.emp_no ";
+				query += "WHERE a.emp_no  NOT IN(SELECT emp_no FROM employees_dept_emp ";
+				query += "WHERE to_date = '9999-01-01') ";
+				query += "AND last_name LIKE ? ";
+				query += "LIMIT ?, ?";
+				stmt1 = conn.prepareStatement(query);
+				stmt1.setString(1,"%"+searchWord+"%");
+				stmt1.setInt(2, beginRow);
+				stmt1.setInt(3, rowPerPage);
+			}
+			System.out.println(stmt1+" <-- stmt1");
+			rs1 = stmt1.executeQuery();
+		 	list = new ArrayList<RetiredEmployees>();
+			while(rs1.next()){
+				RetiredEmployees a = new RetiredEmployees();
+				a.empNo = rs1.getInt("a.emp_no");
+				a.name = rs1.getString("name");
+				a.birthDate = rs1.getString("a.birth_date");
+				a.gender = rs1.getString("a.gender");;
+				a.hireDate = rs1.getString("a.hire_date");
+				a.toDate = rs1.getString("b.to_date");
+				list.add(a);
+			}
+			System.out.println(list.size()+" <-- list.size");
+			
+			// 페이징
+			int lastPage=0;
+			int totalRow = 0;
+			if(searchWord.equals("")){
+				String query2 = "SELECT COUNT(*) ";
+				query2 += "FROM employees_employees a ";
+				query2 += "INNER JOIN employees_dept_emp b ";
+				query2 += "ON a.emp_no = b.emp_no ";
+				query2 += "WHERE a.emp_no  not IN(SELECT emp_no FROM employees_dept_emp  ";
+				query2 += "WHERE to_date = '9999-01-01')";
+				stmt2 = conn.prepareStatement(query2);
+			} else if(selectMenu.equals("firstName")){
+				String query2 = "SELECT COUNT(*) ";
+				query2 += "FROM employees_employees a ";
+				query2 += "INNER JOIN employees_dept_emp b ";
+				query2 += "ON a.emp_no = b.emp_no ";
+				query2 += "WHERE a.emp_no  not IN(SELECT emp_no FROM employees_dept_emp  ";
+				query2 += "WHERE to_date = '9999-01-01') ";
+				query2 += "AND first_name LIKE ?";
+				stmt2 = conn.prepareStatement(query2);
+				stmt2.setString(1,"%"+searchWord+"%");
+			} else if(selectMenu.equals("lastName")){
+				String query2 = "SELECT COUNT(*) ";
+				query2 += "FROM employees_employees a ";
+				query2 += "INNER JOIN employees_dept_emp b ";
+				query2 += "ON a.emp_no = b.emp_no ";
+				query2 += "WHERE a.emp_no  not IN(SELECT emp_no FROM employees_dept_emp  ";
+				query2 += "WHERE to_date = '9999-01-01') ";
+				query2 += "AND last_name LIKE ?";
+				stmt2 = conn.prepareStatement(query2);
+				stmt2.setString(1,"%"+searchWord+"%");
+			}
+			rs2 = stmt2.executeQuery();
+			if(rs2.next()){
+				totalRow = rs2.getInt("count(*)");
+			}
+			System.out.println(totalRow+" <-- totalRow");
+			lastPage = totalRow/rowPerPage;
+			if(totalRow%rowPerPage != 0){
+				lastPage+=1;
+			}
 		
 		%>
 		<!-- 베너 -->
@@ -255,6 +259,15 @@
 					</div>
 				</div>
 			</div>	
-		</div>	
+		</div>
+		<%
+			}finally{
+				rs2.close();
+				stmt2.close();
+				rs1.close();
+				stmt1.close();
+				conn.close();
+			}
+		%>
 	</body>
 </html>

@@ -30,21 +30,26 @@
 		request.setCharacterEncoding("utf-8"); // 인코딩 맞추기
 		
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection(
-				"jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		String query = "SELECT d2.dept_no, d1.dept_name, d2.cnt FROM employees_departments d1 INNER JOIN (SELECT dept_no, COUNT(*) cnt FROM employees_dept_emp WHERE to_date = '9999-01-01' GROUP BY dept_no) d2 ON d1.dept_no = d2.dept_no ORDER BY d2.dept_no";
-		PreparedStatement stmt = conn.prepareStatement(query);
-		ResultSet rs= stmt.executeQuery();
-		//System.out.println(stmt1+" <-- stmt1");
-		//System.out.println(rs1+" <-- rs");
-		ArrayList<DepartmentsCountByDeptEmp> list= new ArrayList<DepartmentsCountByDeptEmp>();// 동적배열 list
-		while(rs.next()){
-			DepartmentsCountByDeptEmp b = new DepartmentsCountByDeptEmp();
-			b.deptNo = rs.getString("d2.dept_no");
-			b.deptName = rs.getString("d1.dept_name");
-			b.count = rs.getInt("d2.cnt");
-			list.add(b); //b를 list에 추가
-		}
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		ArrayList<DepartmentsCountByDeptEmp> list = null;
+		try{
+			conn = DriverManager.getConnection(
+					"jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			String query = "SELECT d2.dept_no, d1.dept_name, d2.cnt FROM employees_departments d1 INNER JOIN (SELECT dept_no, COUNT(*) cnt FROM employees_dept_emp WHERE to_date = '9999-01-01' GROUP BY dept_no) d2 ON d1.dept_no = d2.dept_no ORDER BY d2.dept_no";
+			stmt = conn.prepareStatement(query);
+			rs = stmt.executeQuery();
+			//System.out.println(stmt1+" <-- stmt1");
+			//System.out.println(rs1+" <-- rs");
+			list = new ArrayList<DepartmentsCountByDeptEmp>();// 동적배열 list
+			while(rs.next()){
+				DepartmentsCountByDeptEmp b = new DepartmentsCountByDeptEmp();
+				b.deptNo = rs.getString("d2.dept_no");
+				b.deptName = rs.getString("d1.dept_name");
+				b.count = rs.getInt("d2.cnt");
+				list.add(b); //b를 list에 추가
+			}
 	%>
 		<!-- 베너 -->
 		<div>
@@ -86,5 +91,12 @@
 				</div>
 			</div>
 		</div>
+		<%
+		} finally{
+			rs.close();
+			stmt.close();
+			conn.close();
+		}
+		%>
 	</body>
 </html>

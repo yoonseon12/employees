@@ -43,45 +43,48 @@
 		int beginRow = (currentPage - 1) * rowPerPage; // 행을 어디서부터 출력하냐
 		//2.0 database
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		//System.out.println(conn+" <-- conn");
-		//2. 현재페이지의 departments 테이블 행들
-		ArrayList<Departments> list = new ArrayList<Departments>();//현재 페이지의 department에 행을 저장하려고 만듬
+		Connection conn = null;
 		PreparedStatement stmt1 = null;
-		stmt1 = conn.prepareStatement("select * from employees_departments order by dept_no asc limit ?,?");
-		stmt1.setInt(1, beginRow); // 처음부터
-		stmt1.setInt(2, rowPerPage); // ??까지
-		//System.out.println(stmt1+" <-- stmt1");
-		ResultSet rs1 = null;
-		rs1 = stmt1.executeQuery(); // -> rs1안의 데이터 -> list
-		while (rs1.next()) {
-			Departments d = new Departments();
-			d.deptNo = rs1.getString("dept_no");
-			d.deptName = rs1.getString("dept_name");
-			list.add(d);
-		}
-		// System.out.println(list.size());
-
-		// 3. departments 테이블 전체행의 수
-		int lastPage = 0;
-		int totalRow = 0;
 		PreparedStatement stmt2 = null;
-		stmt2 = conn.prepareStatement("select count(*) from employees_departments");
-		//System.out.println(stmt2+" <--stmt2");
+		ResultSet rs1 = null;
 		ResultSet rs2 = null;
-		rs2 = stmt2.executeQuery();
-		if (rs2.next()) {
-			totalRow = rs2.getInt("count(*)");
-		}
-		lastPage = totalRow / rowPerPage;
-		if (totalRow % rowPerPage != 0) {
-			lastPage += 1;
-		}
-		//System.out.println(lastPage+" <-- lastPage");
-		//System.out.println(totalRow+" <-- totalRow");
-		if(totalRow==0){ //만약 데이터 총개수가 0 이라면(데이터를 검색했는데 값이 없다면)
-			lastPage=currentPage; // 마지막페이지를 현재페이지로 줘서 마지막페이지가0인 오류를 없앰
-		}
+		ArrayList<Departments> list = null;
+		try{		
+			conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			//System.out.println(conn+" <-- conn");
+			//2. 현재페이지의 departments 테이블 행들
+			list = new ArrayList<Departments>();//현재 페이지의 department에 행을 저장하려고 만듬
+			stmt1 = conn.prepareStatement("select * from employees_departments order by dept_no asc limit ?,?");
+			stmt1.setInt(1, beginRow); // 처음부터
+			stmt1.setInt(2, rowPerPage); // ??까지
+			//System.out.println(stmt1+" <-- stmt1");
+			rs1 = stmt1.executeQuery(); // -> rs1안의 데이터 -> list
+			while (rs1.next()) {
+				Departments d = new Departments();
+				d.deptNo = rs1.getString("dept_no");
+				d.deptName = rs1.getString("dept_name");
+				list.add(d);
+			}
+			// System.out.println(list.size());
+	
+			// 3. departments 테이블 전체행의 수
+			int lastPage = 0;
+			int totalRow = 0;
+			stmt2 = conn.prepareStatement("select count(*) from employees_departments");
+			//System.out.println(stmt2+" <--stmt2");
+			rs2 = stmt2.executeQuery();
+			if (rs2.next()) {
+				totalRow = rs2.getInt("count(*)");
+			}
+			lastPage = totalRow / rowPerPage;
+			if (totalRow % rowPerPage != 0) {
+				lastPage += 1;
+			}
+			//System.out.println(lastPage+" <-- lastPage");
+			//System.out.println(totalRow+" <-- totalRow");
+			if(totalRow==0){ //만약 데이터 총개수가 0 이라면(데이터를 검색했는데 값이 없다면)
+				lastPage=currentPage; // 마지막페이지를 현재페이지로 줘서 마지막페이지가0인 오류를 없앰
+			}
 	%>
 		<!-- 베너 -->
 		<div>
@@ -171,5 +174,14 @@
 				</div>
 			</div>
 		</div>
+		<%
+		} finally{
+			rs2.close();
+			stmt2.close();
+			rs1.close();
+			stmt1.close();
+			conn.close();
+		}
+		%>
 	</body>
 </html>

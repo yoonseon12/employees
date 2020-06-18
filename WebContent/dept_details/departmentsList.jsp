@@ -51,58 +51,59 @@
 		//2.0 database
 		Class.forName("org.mariadb.jdbc.Driver");
 		Connection conn = null; // 변수안에 값을 넣기전에일단 초기화 시킴
-		conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		//System.out.println(conn+" <-- conn");
-		//2. 현재페이지의 departments 테이블 행들
-		ArrayList<Departments> list = new ArrayList<Departments>();//현재 페이지의 department에 행을 저장하려고 만듬
 		PreparedStatement stmt1 = null;
-		// 동적 쿼리
-		if(searchWord.equals("")){ // searchWord의 값이 공백이라면 -> 검색을 하지 않았다면 
-			stmt1 = conn.prepareStatement("select * from employees_departments order by dept_no asc limit ?,?");
-			stmt1.setInt(1, beginRow); // 처음부터
-			stmt1.setInt(2, rowPerPage); // ??까지
-		}else{ // searchWord의 값이 공백이아니라면 -> 검색을 했다면
-			stmt1 = conn.prepareStatement("select * from employees_departments where dept_name like ? order by dept_no asc limit ?,?");
-			stmt1.setString(1, "%"+searchWord+"%");
-			stmt1.setInt(2, beginRow);
-			stmt1.setInt(3, rowPerPage);
-		}
-		//System.out.println(stmt1+" <-- stmt1");
-		ResultSet rs1 = null;
-		rs1 = stmt1.executeQuery(); // -> rs1안의 데이터 -> list
-		while (rs1.next()) {
-			Departments d = new Departments();
-			d.deptNo = rs1.getString("dept_no");
-			d.deptName = rs1.getString("dept_name");
-			list.add(d);
-		}
-		// System.out.println(list.size());
-
-		// 3. departments 테이블 전체행의 수
-		int lastPage = 0;
-		int totalRow = 0;
 		PreparedStatement stmt2 = null;
-		if(searchWord.equals("")){
-			stmt2 = conn.prepareStatement("select count(*) from employees_departments");
-		}else{
-			stmt2 = conn.prepareStatement("select count(*) from employees_departments where dept_name like ?");
-			stmt2.setString(1, "%"+searchWord+"%");
-		}
-		//System.out.println(stmt2+" <--stmt2");
+		ResultSet rs1 = null;
 		ResultSet rs2 = null;
-		rs2 = stmt2.executeQuery();
-		if (rs2.next()) {
-			totalRow = rs2.getInt("count(*)");
-		}
-		lastPage = totalRow / rowPerPage;
-		if (totalRow % rowPerPage != 0) {
-			lastPage += 1;
-		}
-		//System.out.println(lastPage+" <-- lastPage");
-		//System.out.println(totalRow+" <-- totalRow");
-		if(totalRow==0){ //만약 데이터 총개수가 0 이라면(데이터를 검색했는데 값이 없다면)
-			lastPage=currentPage; // 마지막페이지를 현재페이지로 줘서 마지막페이지가0인 오류를 없앰
-		}
+		try{
+			conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			//System.out.println(conn+" <-- conn");
+			//2. 현재페이지의 departments 테이블 행들
+			ArrayList<Departments> list = new ArrayList<Departments>();//현재 페이지의 department에 행을 저장하려고 만듬
+			// 동적 쿼리
+			if(searchWord.equals("")){ // searchWord의 값이 공백이라면 -> 검색을 하지 않았다면 
+				stmt1 = conn.prepareStatement("select * from employees_departments order by dept_no asc limit ?,?");
+				stmt1.setInt(1, beginRow); // 처음부터
+				stmt1.setInt(2, rowPerPage); // ??까지
+			}else{ // searchWord의 값이 공백이아니라면 -> 검색을 했다면
+				stmt1 = conn.prepareStatement("select * from employees_departments where dept_name like ? order by dept_no asc limit ?,?");
+				stmt1.setString(1, "%"+searchWord+"%");
+				stmt1.setInt(2, beginRow);
+				stmt1.setInt(3, rowPerPage);
+			}
+			//System.out.println(stmt1+" <-- stmt1");
+			rs1 = stmt1.executeQuery(); // -> rs1안의 데이터 -> list
+			while (rs1.next()) {
+				Departments d = new Departments();
+				d.deptNo = rs1.getString("dept_no");
+				d.deptName = rs1.getString("dept_name");
+				list.add(d);
+			}
+			// System.out.println(list.size());
+	
+			// 3. departments 테이블 전체행의 수
+			int lastPage = 0;
+			int totalRow = 0;
+			if(searchWord.equals("")){
+				stmt2 = conn.prepareStatement("select count(*) from employees_departments");
+			}else{
+				stmt2 = conn.prepareStatement("select count(*) from employees_departments where dept_name like ?");
+				stmt2.setString(1, "%"+searchWord+"%");
+			}
+			//System.out.println(stmt2+" <--stmt2");
+			rs2 = stmt2.executeQuery();
+			if (rs2.next()) {
+				totalRow = rs2.getInt("count(*)");
+			}
+			lastPage = totalRow / rowPerPage;
+			if (totalRow % rowPerPage != 0) {
+				lastPage += 1;
+			}
+			//System.out.println(lastPage+" <-- lastPage");
+			//System.out.println(totalRow+" <-- totalRow");
+			if(totalRow==0){ //만약 데이터 총개수가 0 이라면(데이터를 검색했는데 값이 없다면)
+				lastPage=currentPage; // 마지막페이지를 현재페이지로 줘서 마지막페이지가0인 오류를 없앰
+			}
 	%>
 		<!-- 베너 -->
 		<div>
@@ -217,5 +218,14 @@
 				</div>
 			</div>
 		</div>
+		<%
+		}finally{
+			rs2.close();
+			stmt2.close();
+			rs1.close();
+			stmt1.close();
+			conn.close();
+		}
+		%>
 	</body>
 </html>

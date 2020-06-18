@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import ="java.sql.*" %>
+<%@ page import ="gd.emp.*" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -38,15 +39,25 @@
 		System.out.println(currentPage+" <-- currentPage");
 		int rowPerPage = Integer.parseInt(request.getParameter("rowPerPage"));
 		System.out.println(rowPerPage+" <-- rowPerPage");
-		
-		//Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		//System.out.println(conn+" <-- conn");
-		PreparedStatement stmt1 = conn.prepareStatement("select qna_no, qna_title, qna_content, qna_user, qna_date from employees_qna where qna_no=?");
-		stmt1.setInt(1, qnaNo);
-		//System.out.println(stmt1+" <-- stmt1");
-		ResultSet rs1 = stmt1.executeQuery();
-		if(rs1.next()){
+
+		Class.forName("org.mariadb.jdbc.Driver");
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try{
+			conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			//System.out.println(conn+" <-- conn");
+			stmt = conn.prepareStatement("select qna_no, qna_title, qna_content, qna_user, qna_date from employees_qna where qna_no=?");
+			stmt.setInt(1, qnaNo);
+			//System.out.println(stmt1+" <-- stmt1");
+			rs = stmt.executeQuery();
+			QnA q = null;
+			if(rs.next()){
+				q = new QnA();
+				q.qnaTitle = rs.getString("qna_title");
+				q.qnaContent = rs.getString("qna_content");
+				q.qnaUser = rs.getString("qna_user");
+			}
 	%>
 		<!-- 베너 -->
 		<div>
@@ -77,7 +88,7 @@
 								<strong>제목</strong>
 							</td>
 							<td>
-								<textarea style="font-size: 13px;" class="form-control" rows="1" name="qnaTitle"><%=rs1.getString("qna_title")%></textarea>
+								<textarea style="font-size: 13px;" class="form-control" rows="1" name="qnaTitle"><%=q.qnaTitle%></textarea>
 							</td>
 						</tr>
 						<tr>
@@ -85,7 +96,7 @@
 								<strong>내용</strong>
 							</td>
 							<td>
-								<textarea style="font-size: 13px;" class="form-control" rows="2" name="qnaContent"><%=rs1.getString("qna_content")%></textarea>
+								<textarea style="font-size: 13px;" class="form-control" rows="2" name="qnaContent"><%=q.qnaContent%></textarea>
 							</td>
 						</tr>
 						<tr>
@@ -93,16 +104,20 @@
 								<strong>글쓴이</strong>
 							</td>
 							<td style="font-size: 13px;">
-								<%=rs1.getString("qna_user")%>
+								<%=q.qnaUser%>
 							</td>
 						</tr>
 					</table>
 					<button class="btn btn-secondary btn-sm" type="submit">수정</button>
-			<%		
-				}
-			%>
 				</div>
 			</div>
 		</form>
+		<%
+		} finally{
+			rs.close();
+			stmt.close();
+			conn.close();
+		}
+		%>
 	</body>
 </html>

@@ -1,3 +1,4 @@
+<%@page import="gd.emp.Departments"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
@@ -32,13 +33,22 @@
 			System.out.println(deptNo+" <- deptNo");
 			
 			Class.forName("org.mariadb.jdbc.Driver");
-			Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-			System.out.println(conn+" <-- conn"); //연결 디버깅
-			PreparedStatement stmt = conn.prepareStatement("SELECT dept_no, dept_name FROM employees_departments WHERE dept_no=?");
-			stmt.setString(1, deptNo);
-			System.out.println(stmt+" <- stmt");
-			ResultSet rs= stmt.executeQuery();
-			if(rs.next()){
+			Connection conn = null;
+			PreparedStatement stmt = null;
+			ResultSet rs = null;
+			Departments d = null;
+			try{
+				conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+				System.out.println(conn+" <-- conn"); //연결 디버깅
+				stmt = conn.prepareStatement("SELECT dept_no, dept_name FROM employees_departments WHERE dept_no=?");
+				stmt.setString(1, deptNo);
+				System.out.println(stmt+" <- stmt");
+				rs= stmt.executeQuery();
+				if(rs.next()){
+					d = new Departments();
+					d.deptNo = rs.getString("dept_no");
+					d.deptName = rs.getString("dept_name");
+				}
 		%>
 		<!-- 베너 -->
 		<div>
@@ -61,7 +71,7 @@
 								<span>부서번호</span>
 							</div>
 							<div>
-								<input style="background: white;" type="text" class="form-control" name="deptNo" value="<%=rs.getString("dept_no")%>" readonly="readonly">
+								<input style="background: white;" type="text" class="form-control" name="deptNo" value="<%=d.deptNo%>" readonly="readonly">
 							</div>
 						</div>
 						<div>
@@ -69,7 +79,7 @@
 								<span>부서 이름</span>
 							</div>
 							<div>
-								<input type="text" class="form-control" name="deptName" value="<%=rs.getString("dept_name")%>">
+								<input type="text" class="form-control" name="deptName" value="<%=d.deptName%>">
 							</div>
 						</div>
 					</div>
@@ -80,6 +90,10 @@
 			</div>
 		</div>
 		<%
+			} finally{
+				rs.close();
+				stmt.close();
+				conn.close();
 			}
 		%>
 	</body>

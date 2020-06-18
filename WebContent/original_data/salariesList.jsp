@@ -40,37 +40,43 @@
 		System.out.println(currentPage+" <- currentPage");
 		//db설정
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		PreparedStatement stmt1 = conn.prepareStatement("select * from employees_salaries order by emp_no asc limit ?,?");
-		stmt1.setInt(1, beginRow);
-		stmt1.setInt(2, rowPerPage);
-		System.out.println(stmt1+" <- stmt1");
-		ResultSet rs1 = stmt1.executeQuery();
-		ArrayList<Salaries> list = new ArrayList<Salaries>();
-		while(rs1.next()){ // 쿼리를 실행해서 얻은 목록과 클래스파일의 목록을 연결(?)시킴
-			Salaries s = new Salaries();
-			s.empNo = rs1.getInt("emp_no");
-			s.salary = rs1.getInt("salary");
-			s.fromDate = rs1.getString("from_date");
-			s.toDate = rs1.getString("to_date");
-			list.add(s);
-		}
-		System.out.println(list.size()+" <- list.size");
-		//마지막페이지 설정
-		int lastPage = 0; // 마지막페이지
-		int totalRow = 0; // 데이터의 총 개수
-		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from employees_salaries"); // 데이터의 총 개수를 가져올 쿼리입력
-		System.out.println(stmt2+" <- stmt2");
-		ResultSet rs2 = stmt2.executeQuery();
-		if(rs2.next()){
-			totalRow = rs2.getInt("count(*)");// 쿼리 실행값과 변수를 연결시킴
-		}
-		System.out.println(totalRow+" <- totalRow");
-		
-		lastPage=totalRow/rowPerPage; //마지막페이지=데이터총개수/페이지에 출력할 데이터수
-		if(totalRow%rowPerPage!=0){
-			lastPage+=1;
-		}
+		Connection conn = null;
+		PreparedStatement stmt1 = null;
+		PreparedStatement stmt2 = null;
+		ResultSet rs1 = null;
+		ResultSet rs2 = null;
+		try{
+			conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			stmt1 = conn.prepareStatement("select * from employees_salaries order by emp_no asc limit ?,?");
+			stmt1.setInt(1, beginRow);
+			stmt1.setInt(2, rowPerPage);
+			System.out.println(stmt1+" <- stmt1");
+			rs1 = stmt1.executeQuery();
+			ArrayList<Salaries> list = new ArrayList<Salaries>();
+			while(rs1.next()){ // 쿼리를 실행해서 얻은 목록과 클래스파일의 목록을 연결(?)시킴
+				Salaries s = new Salaries();
+				s.empNo = rs1.getInt("emp_no");
+				s.salary = rs1.getInt("salary");
+				s.fromDate = rs1.getString("from_date");
+				s.toDate = rs1.getString("to_date");
+				list.add(s);
+			}
+			System.out.println(list.size()+" <- list.size");
+			//마지막페이지 설정
+			int lastPage = 0; // 마지막페이지
+			int totalRow = 0; // 데이터의 총 개수
+			stmt2 = conn.prepareStatement("select count(*) from employees_salaries"); // 데이터의 총 개수를 가져올 쿼리입력
+			System.out.println(stmt2+" <- stmt2");
+			rs2 = stmt2.executeQuery();
+			if(rs2.next()){
+				totalRow = rs2.getInt("count(*)");// 쿼리 실행값과 변수를 연결시킴
+			}
+			System.out.println(totalRow+" <- totalRow");
+			
+			lastPage=totalRow/rowPerPage; //마지막페이지=데이터총개수/페이지에 출력할 데이터수
+			if(totalRow%rowPerPage!=0){
+				lastPage+=1;
+			}
 	%>	
 		<!-- 베너 -->
 		<div>
@@ -159,6 +165,15 @@
 					</div>
 				</div>
 			</div>
-		</div>	
+		</div>
+		<%
+		} finally{
+			rs2.close();
+			stmt2.close();
+			rs1.close();
+			stmt1.close();
+			conn.close();
+		}
+		%>
 	</body>
 </html>

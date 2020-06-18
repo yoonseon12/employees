@@ -46,44 +46,48 @@
 		//System.out.println(beginRow);
 		//2.0 database 설정
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		//2. 현재 페이지의 departments 테이블 행들
-		//System.out.println(conn+" <-- conn");
+		Connection conn = null;
 		PreparedStatement stmt1 = null;
-		stmt1 = conn.prepareStatement("select * from employees_employees order by emp_no asc limit ?,?");
-		stmt1.setInt(1, beginRow);
-		stmt1.setInt(2, rowPerPage);
-		System.out.println(stmt1+"<-- stmt1");
-		ResultSet rs1 = stmt1.executeQuery();
-		//System.out.println(stmt1+" <-- stmt1");
-		ArrayList<Employees> list = new ArrayList<Employees>();
-		while (rs1.next()) {
-			Employees d = new Employees(); // 클래스 새로운 배열을 선언(?) -선언할 데이터는 아래에 있는 값들
-			// d.(클래스에 있는값)=rs.get(형태)("테이블 열 이름");
-			d.empNo = rs1.getInt("emp_no");
-			d.birthDate = rs1.getString("birth_date");
-			d.firstName = rs1.getString("first_name");
-			d.lastName = rs1.getString("last_name");
-			d.gender = rs1.getString("gender");
-			d.hireDate = rs1.getString("hire_date");
-			list.add(d); // 변수 d의 값을 list에 더한다 // rs1안의 데이터 -> list
-		}
-		//3. departments 테이블 전체행의 수
-		int lastPage = 0; // 마지막페이지 변수를 선언하고 초기화
-		int totalRow = 0; // 데이터의 총갯수 변수를 선언하고 초기화
 		PreparedStatement stmt2 = null;
-		stmt2 = conn.prepareStatement("select count(*) from employees_employees"); // 데이터의 갯수를 출력하는 쿼리문
-		System.out.println(stmt2+" <- stmt2");
-		ResultSet rs2 = stmt2.executeQuery();
-		if (rs2.next()) {
-			totalRow = rs2.getInt("count(*)"); // 카운터의 값을 받아옴
-		}
-		lastPage = totalRow / rowPerPage; // 마지막페이지 = 데이터 총갯수/한페이지에 볼 데이터 갯수
-		if (totalRow % rowPerPage != 0) { // 만약 (데이터 총갯수/한페이지에 볼 데이터 갯수)계산한 값이 나머지가 없다면
-			lastPage += 1; // 마지막페이지를 1늘림
-		}
-		//System.out.println(totalRow+" <-- totalRow");
-		//System.out.println(lastPage+" <-- lastPage");
+		ResultSet rs1 = null;
+		ResultSet rs2 = null;
+		try{
+			conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			//2. 현재 페이지의 departments 테이블 행들
+			//System.out.println(conn+" <-- conn");
+			stmt1 = conn.prepareStatement("select * from employees_employees order by emp_no asc limit ?,?");
+			stmt1.setInt(1, beginRow);
+			stmt1.setInt(2, rowPerPage);
+			System.out.println(stmt1+"<-- stmt1");
+			rs1 = stmt1.executeQuery();
+			//System.out.println(stmt1+" <-- stmt1");
+			ArrayList<Employees> list = new ArrayList<Employees>();
+			while (rs1.next()) {
+				Employees d = new Employees(); // 클래스 새로운 배열을 선언(?) -선언할 데이터는 아래에 있는 값들
+				// d.(클래스에 있는값)=rs.get(형태)("테이블 열 이름");
+				d.empNo = rs1.getInt("emp_no");
+				d.birthDate = rs1.getString("birth_date");
+				d.firstName = rs1.getString("first_name");
+				d.lastName = rs1.getString("last_name");
+				d.gender = rs1.getString("gender");
+				d.hireDate = rs1.getString("hire_date");
+				list.add(d); // 변수 d의 값을 list에 더한다 // rs1안의 데이터 -> list
+			}
+			//3. departments 테이블 전체행의 수
+			int lastPage = 0; // 마지막페이지 변수를 선언하고 초기화
+			int totalRow = 0; // 데이터의 총갯수 변수를 선언하고 초기화
+			stmt2 = conn.prepareStatement("select count(*) from employees_employees"); // 데이터의 갯수를 출력하는 쿼리문
+			System.out.println(stmt2+" <- stmt2");
+			rs2 = stmt2.executeQuery();
+			if (rs2.next()) {
+				totalRow = rs2.getInt("count(*)"); // 카운터의 값을 받아옴
+			}
+			lastPage = totalRow / rowPerPage; // 마지막페이지 = 데이터 총갯수/한페이지에 볼 데이터 갯수
+			if (totalRow % rowPerPage != 0) { // 만약 (데이터 총갯수/한페이지에 볼 데이터 갯수)계산한 값이 나머지가 없다면
+				lastPage += 1; // 마지막페이지를 1늘림
+			}
+			//System.out.println(totalRow+" <-- totalRow");
+			//System.out.println(lastPage+" <-- lastPage");
 	%>
 		<!-- 베너 -->
 		<div>
@@ -178,6 +182,15 @@
 					</div>
 				</div>
 			</div>
-		</div>s	
+		</div>
+		<%
+		} finally{
+			rs2.close();
+			stmt2.close();
+			rs1.close();
+			stmt1.close();
+			conn.close();
+		}
+		%>
 	</body>
 </html>

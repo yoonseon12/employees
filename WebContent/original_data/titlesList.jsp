@@ -43,36 +43,42 @@
 		//System.out.println(beginRow+" <- beginRow");
 		//db연결
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		//System.out.println(conn+" <- conn");
-		PreparedStatement stmt1 = conn.prepareStatement("select * from employees_titles order by emp_no asc limit ?,?"); // 쿼리작성
-		stmt1.setInt(1,beginRow);
-		stmt1.setInt(2,rowPerPage);
-		//System.out.println(stmt1+" <- stmt1");
-		ResultSet rs1 = stmt1.executeQuery(); // 쿼리를 실행시킨다
-		ArrayList<Titles> list = new ArrayList<Titles>();
-		while(rs1.next()){
-			Titles c = new Titles();
-			c.empNo = rs1.getInt("emp_no");
-			c.title = rs1.getString("title");
-			c.fromDate = rs1.getString("from_date");
-			c.toDate = rs1.getString("to_date");
-			list.add(c);
-		}
-		//System.out.println(list.size()+" <- list.size");
-		//마지막페이지
-		int lastPage=0; // 마지막페이지를 저장할 변수 선언 후 초기화
-		int totalRow=0; // 데이터의 총개수를 저장할 변수 선언 후 초기화
-		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from employees_titles");
-		ResultSet rs2= stmt2.executeQuery();
-		if(rs2.next()){
-			totalRow= rs2.getInt("count(*)");//데이터의 총개수는 쿼리를실행한 값(=count값)을 정수로 변환시킨 값
-		}
-		//System.out.println(totalRow);
-		lastPage=totalRow/rowPerPage;
-		if(totalRow%rowPerPage!=0){
-			lastPage+=1;
-		}
+		Connection conn = null;
+		PreparedStatement stmt1 = null;
+		PreparedStatement stmt2 = null;
+		ResultSet rs1 = null;
+		ResultSet rs2 = null;
+		try{
+			conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			//System.out.println(conn+" <- conn");
+			stmt1 = conn.prepareStatement("select * from employees_titles order by emp_no asc limit ?,?"); // 쿼리작성
+			stmt1.setInt(1,beginRow);
+			stmt1.setInt(2,rowPerPage);
+			//System.out.println(stmt1+" <- stmt1");
+			rs1 = stmt1.executeQuery(); // 쿼리를 실행시킨다
+			ArrayList<Titles> list = new ArrayList<Titles>();
+			while(rs1.next()){
+				Titles c = new Titles();
+				c.empNo = rs1.getInt("emp_no");
+				c.title = rs1.getString("title");
+				c.fromDate = rs1.getString("from_date");
+				c.toDate = rs1.getString("to_date");
+				list.add(c);
+			}
+			//System.out.println(list.size()+" <- list.size");
+			//마지막페이지
+			int lastPage=0; // 마지막페이지를 저장할 변수 선언 후 초기화
+			int totalRow=0; // 데이터의 총개수를 저장할 변수 선언 후 초기화
+			stmt2 = conn.prepareStatement("select count(*) from employees_titles");
+			rs2 = stmt2.executeQuery();
+			if(rs2.next()){
+				totalRow= rs2.getInt("count(*)");//데이터의 총개수는 쿼리를실행한 값(=count값)을 정수로 변환시킨 값
+			}
+			//System.out.println(totalRow);
+			lastPage=totalRow/rowPerPage;
+			if(totalRow%rowPerPage!=0){
+				lastPage+=1;
+			}
 	%>
 		<!-- 베너 -->
 		<div>
@@ -163,6 +169,15 @@
 					</div>
 				</div>
 			</div>
-		</div>	
+		</div>
+		<%
+		} finally{
+			rs2.close();
+			stmt2.close();
+			rs1.close();
+			stmt1.close();
+			conn.close();
+		}
+		%>
 	</body>
 </html>

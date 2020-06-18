@@ -50,39 +50,45 @@
 		
 		//2.0 db설정
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		//2. 현재페이지의departments테이블 행들
-		PreparedStatement stmt1 = conn.prepareStatement(
-				"select * from employees_dept_manager order by dept_no asc limit ?,?");
-		stmt1.setInt(1, beginRow); // 한페이지에 몇개씩?
-		stmt1.setInt(2, rowPerPage); // 행을 어디서부터 출력할 것인가?
-		ResultSet rs1= stmt1.executeQuery();
-		//System.out.println(stmt1+" <-- stmt1");
-		//System.out.println(rs1+" <-- rs");
-		ArrayList<DeptManager> list= new ArrayList<DeptManager>();// 동적배열 list
-		while(rs1.next()){
-			DeptManager b = new DeptManager();
-			b.deptNo = rs1.getString("dept_no");
-			b.empNo = rs1.getInt("emp_no");
-			b.fromDate = rs1.getString("from_date");
-			b.toDate = rs1.getString("to_date");
-			list.add(b); //b를 list에 추가
-		}
-		// 창넘기기
-		int lastPage = 0; // 마지막페이지 변수를 선언 후 초기화
-		int totalRow = 0; // 데이터의 총 개수 변수를 선언 후 초기화
-		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from employees_dept_manager");
-		//System.out.println(stmt2+" <- stmt2");
-		ResultSet rs2 = stmt2.executeQuery();
-		if(rs2.next()){ //만약 다음페이지 값이 있다면
-			totalRow = rs2.getInt("count(*)"); // 데이터 총갯수
-		}
-		//System.out.println(totalRow+" <-- totalRow");
-		lastPage = totalRow / rowPerPage;
-		if(totalRow%rowPerPage!=0){ // 다음행에 출력할 데이터가 있다면
-			lastPage+=1; //마지막 페이지 하나 추가
-		}
-		//System.out.println(lastPage+" <-- lastPage");
+		Connection conn = null;
+		PreparedStatement stmt1 = null;
+		PreparedStatement stmt2 = null;
+		ResultSet rs1= null;
+		ResultSet rs2= null;
+		try{
+			conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			//2. 현재페이지의departments테이블 행들
+			stmt1 = conn.prepareStatement(
+					"select * from employees_dept_manager order by dept_no asc limit ?,?");
+			stmt1.setInt(1, beginRow); // 한페이지에 몇개씩?
+			stmt1.setInt(2, rowPerPage); // 행을 어디서부터 출력할 것인가?
+			rs1= stmt1.executeQuery();
+			//System.out.println(stmt1+" <-- stmt1");
+			//System.out.println(rs1+" <-- rs");
+			ArrayList<DeptManager> list= new ArrayList<DeptManager>();// 동적배열 list
+			while(rs1.next()){
+				DeptManager b = new DeptManager();
+				b.deptNo = rs1.getString("dept_no");
+				b.empNo = rs1.getInt("emp_no");
+				b.fromDate = rs1.getString("from_date");
+				b.toDate = rs1.getString("to_date");
+				list.add(b); //b를 list에 추가
+			}
+			// 창넘기기
+			int lastPage = 0; // 마지막페이지 변수를 선언 후 초기화
+			int totalRow = 0; // 데이터의 총 개수 변수를 선언 후 초기화
+			stmt2 = conn.prepareStatement("select count(*) from employees_dept_manager");
+			//System.out.println(stmt2+" <- stmt2");
+			rs2 = stmt2.executeQuery();
+			if(rs2.next()){ //만약 다음페이지 값이 있다면
+				totalRow = rs2.getInt("count(*)"); // 데이터 총갯수
+			}
+			//System.out.println(totalRow+" <-- totalRow");
+			lastPage = totalRow / rowPerPage;
+			if(totalRow%rowPerPage!=0){ // 다음행에 출력할 데이터가 있다면
+				lastPage+=1; //마지막 페이지 하나 추가
+			}
+			//System.out.println(lastPage+" <-- lastPage");
 	%>
 		<!-- 베너 -->
 		<div>
@@ -172,5 +178,14 @@
 				</div>
 			</div>
 		</div>
+		<%
+		} finally{
+			rs2.close();
+			stmt2.close();
+			rs1.close();
+			stmt1.close();
+			conn.close();
+		}
+		%>
 	</body>
 </html>

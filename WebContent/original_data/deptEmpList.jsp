@@ -48,39 +48,45 @@
 		int beginLow = (currentPage-1)*10; // 데이터를 몇번째부터 출력할건지
 		//데이터베이스 연결
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		//System.out.println(conn+" <-- conn");
-		
-		PreparedStatement stmt = conn.prepareStatement(
-				"select * from employees_dept_emp limit ?,?");
-		stmt.setInt(1,beginLow);
-		stmt.setInt(2,rowPerPage);
-		//System.out.println(stmt+" <-- stmt");
-		ResultSet rs = stmt.executeQuery();
-		//System.out.println(rs+" <-- rs");
-		ArrayList<DeptEmp> list = new ArrayList<DeptEmp>(); //동적배열
-		while(rs.next()){
-			DeptEmp a = new DeptEmp();
-			a.empNo=rs.getInt("emp_no");
-			a.deptNo=rs.getString("dept_no");
-			a.fromDate=rs.getString("from_date");
-			a.toDate=rs.getString("to_date");
-			list.add(a);
-		}
-		//테이블 전체행의 수
-		int lastPage = 0; //마지막페이지를 저장할 변수를 선언하고 초기화
-		int totalRow = 0; // 데이터의 총갯수를 저장할 변수로 선언하고 초기화
-		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from employees_dept_emp");
-		ResultSet rs2 = stmt2.executeQuery();
-		//System.out.println(rs2+" <-- rs2");
-		if(rs2.next()){
-			totalRow = rs2.getInt("count(*)");
-		}
-		//System.out.println(totalRow+" <-- totalRow");
-		lastPage= totalRow / rowPerPage; // 마지막페이지 = 데이터총개수/페이지당 출력할 데이터갯수
-		if(totalRow%rowPerPage!=0){ // 데이터총개수/페이지당 출력할 데이터갯수의 나머지가 0이아니면
-			lastPage+=1; // 초과하는 데이터를 표시하기위해 마지팍페이지+1
-		}
+		Connection conn = null;
+		PreparedStatement stmt1 = null;
+		PreparedStatement stmt2 = null;
+		ResultSet rs1 = null;
+		ResultSet rs2 = null;
+		try{
+			conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			//System.out.println(conn+" <-- conn");
+			
+			stmt1 = conn.prepareStatement(
+					"select * from employees_dept_emp limit ?,?");
+			stmt1.setInt(1,beginLow);
+			stmt1.setInt(2,rowPerPage);
+			//System.out.println(stmt+" <-- stmt");
+			rs1 = stmt1.executeQuery();
+			//System.out.println(rs+" <-- rs");
+			ArrayList<DeptEmp> list = new ArrayList<DeptEmp>(); //동적배열
+			while(rs1.next()){
+				DeptEmp a = new DeptEmp();
+				a.empNo=rs1.getInt("emp_no");
+				a.deptNo=rs1.getString("dept_no");
+				a.fromDate=rs1.getString("from_date");
+				a.toDate=rs1.getString("to_date");
+				list.add(a);
+			}
+			//테이블 전체행의 수
+			int lastPage = 0; //마지막페이지를 저장할 변수를 선언하고 초기화
+			int totalRow = 0; // 데이터의 총갯수를 저장할 변수로 선언하고 초기화
+			stmt2 = conn.prepareStatement("select count(*) from employees_dept_emp");
+			rs2 = stmt2.executeQuery();
+			//System.out.println(rs2+" <-- rs2");
+			if(rs2.next()){
+				totalRow = rs2.getInt("count(*)");
+			}
+			//System.out.println(totalRow+" <-- totalRow");
+			lastPage= totalRow / rowPerPage; // 마지막페이지 = 데이터총개수/페이지당 출력할 데이터갯수
+			if(totalRow%rowPerPage!=0){ // 데이터총개수/페이지당 출력할 데이터갯수의 나머지가 0이아니면
+				lastPage+=1; // 초과하는 데이터를 표시하기위해 마지팍페이지+1
+			}
 	%>
 		<!-- 베너 -->
 		<div>
@@ -170,5 +176,14 @@
 				</div>
 			</div>
 		</div>
+		<%
+		} finally{
+			rs2.close();
+			stmt2.close();
+			rs1.close();
+			stmt1.close();
+			conn.close();
+		}
+		%>
 	</body>
 </html>

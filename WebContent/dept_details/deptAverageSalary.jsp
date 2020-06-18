@@ -29,25 +29,29 @@
 		request.setCharacterEncoding("utf-8"); // 인코딩 맞추기
 
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = null; // 변수안에 값을 넣기전에일단 초기화 시킴
-		conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		String query = "SELECT d.dept_no, d.dept_name, AVG(s.salary) 'avgSalary' ";
-		query += "FROM employees_departments d ";
-		query += "INNER JOIN employees_dept_emp de ";
-		query += "INNER JOIN employees_salaries s ";
-		query += "ON d.dept_no = de.dept_no AND de.emp_no = s.emp_no ";
-		query += "GROUP BY d.dept_name ";
-		query += "ORDER BY d.dept_no";
-		PreparedStatement stmt1 = conn.prepareStatement(query);
-		ResultSet rs1 = stmt1.executeQuery();
-		List<DeptAverageSalary> list = new ArrayList<DeptAverageSalary>();
-		while (rs1.next()) {
-			DeptAverageSalary d = new DeptAverageSalary();
-			d.deptNo = rs1.getString("d.dept_no");
-			d.deptName = rs1.getString("d.dept_name");
-			d.avgSalary = rs1.getDouble("avgSalary");
-			list.add(d);
-		}
+		Connection conn = null;
+		List<DeptAverageSalary> list = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try{
+			conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			String query = "SELECT d.dept_no, d.dept_name, AVG(s.salary) 'avgSalary' ";
+			query += "FROM employees_departments d ";
+			query += "INNER JOIN employees_dept_emp de ";
+			query += "INNER JOIN employees_salaries s ";
+			query += "ON d.dept_no = de.dept_no AND de.emp_no = s.emp_no ";
+			query += "GROUP BY d.dept_name ";
+			query += "ORDER BY d.dept_no";
+			stmt = conn.prepareStatement(query);
+			rs = stmt.executeQuery();
+			list = new ArrayList<DeptAverageSalary>();
+			while (rs.next()) {
+				DeptAverageSalary d = new DeptAverageSalary();
+				d.deptNo = rs.getString("d.dept_no");
+				d.deptName = rs.getString("d.dept_name");
+				d.avgSalary = rs.getDouble("avgSalary");
+				list.add(d);
+			}
 		// System.out.println(list.size())
 	%>
 		<!-- 베너 -->
@@ -90,5 +94,12 @@
 				</div>
 			</div>
 		</div>
+		<%
+		} finally{
+			rs.close();
+			stmt.close();
+			conn.close();
+		}
+		%>
 	</body>
 </html>

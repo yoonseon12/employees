@@ -18,17 +18,24 @@
 	System.out.println(rowPerPage+" <-- rowPerPage");
 	
 	Class.forName("org.mariadb.jdbc.Driver");
-	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-	System.out.println(conn+" <-- conn");
-	PreparedStatement stmt1 = conn.prepareStatement("delete from employees_qna where qna_no=? and qna_pw=?");
-	stmt1.setInt(1, qnaNo);
-	stmt1.setString(2, qnaPw);
-	System.out.println(stmt1+" <-- stmt1");
-	int row = stmt1.executeUpdate(); // 1(결과물이 있음) or 0(결과물이 없음)
-	System.out.println(row+" <-- row"); // 1 or 0
-	if(row==0){ // 비밀번호 틀림
-		response.sendRedirect(request.getContextPath()+"/qna/DeleteQnaForm.jsp?qnaNo="+qnaNo+"&currentPage="+currentPage+"&selectMenu="+selectMenu+"&searchWord="+searchWord+"&rowPerPage="+rowPerPage); // 재요청(끝나면 qnaList로 이동한다.)
-	} else{ // 비밀번호 맞음
-		response.sendRedirect(request.getContextPath()+"/qna/qnaList.jsp?currentPage="+currentPage+"&selectMenu="+selectMenu+"&searchWord="+searchWord+"&rowPerPage="+rowPerPage); // 재요청(끝나면 qnaList로 이동한다.)
+	Connection conn = null;
+	PreparedStatement stmt = null;
+	try{
+		conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+		System.out.println(conn+" <-- conn");
+		stmt = conn.prepareStatement("delete from employees_qna where qna_no=? and qna_pw=?");
+		stmt.setInt(1, qnaNo);
+		stmt.setString(2, qnaPw);
+		System.out.println(stmt+" <-- stmt");
+		int row = stmt.executeUpdate(); // 1(결과물이 있음) or 0(결과물이 없음)
+		System.out.println(row+" <-- row"); // 1 or 0
+		if(row==0){ // 비밀번호 틀림
+			response.sendRedirect(request.getContextPath()+"/qna/DeleteQnaForm.jsp?qnaNo="+qnaNo+"&currentPage="+currentPage+"&selectMenu="+selectMenu+"&searchWord="+searchWord+"&rowPerPage="+rowPerPage); // 재요청(끝나면 qnaList로 이동한다.)
+		} else{ // 비밀번호 맞음
+			response.sendRedirect(request.getContextPath()+"/qna/qnaList.jsp?currentPage="+currentPage+"&selectMenu="+selectMenu+"&searchWord="+searchWord+"&rowPerPage="+rowPerPage); // 재요청(끝나면 qnaList로 이동한다.)
+		}
+	} finally{
+		stmt.close();
+		conn.close();
 	}
 %>

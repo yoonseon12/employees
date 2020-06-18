@@ -66,33 +66,30 @@
 		//System.out.println(qnaNo+" <-- qnaNo");
 
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		//System.out.println(conn+" <-- conn");
-		PreparedStatement stmt1 = conn.prepareStatement(
-				"select qna_no, qna_title, qna_content, qna_user, qna_date from employees_qna where qna_no=?");
-		stmt1.setInt(1, qnaNo);
-		//System.out.println(stmt1+" <-- stmt1");
-		ResultSet rs1 = stmt1.executeQuery();
-		//System.out.println(rs1+" <-- rs1");
-		QnA qna = new QnA();
-		if (rs1.next()) {
-			qna.qnaNo = rs1.getInt("qna_no");
-			qna.qnaTitle = rs1.getString("qna_title");
-			qna.qnaContent = rs1.getString("qna_content");
-			qna.qnaUser = rs1.getString("qna_user");
-			qna.qnaDate = rs1.getString("qna_date");
-		}
-
-		System.out.println(request.getRequestURI() + request.getQueryString());
-
-		/*  if(request.getAttribute("listUrl") != null) {
-		String backToListUrl = (String)request.getAttribute("listUrl");
-		
-		response.sendRedirect(backToListUrl);
-		  } else {
-		String returnUrl = request.getContextPath() + "/qna/qnaList.jsp?currentPage=" + currentPage + "&selectMenu=" + selectMenu + "&searchWord=" + searchWord;
-		request.setAttribute("listUrl", returnUrl);
-		  }  */
+		Connection conn = null;
+		PreparedStatement stmt1 = null;
+		PreparedStatement stmt2 = null;
+		ResultSet rs1 = null;
+		ResultSet rs2 = null;
+		try{
+			conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			//System.out.println(conn+" <-- conn");
+			stmt1 = conn.prepareStatement(
+					"select qna_no, qna_title, qna_content, qna_user, qna_date from employees_qna where qna_no=?");
+			stmt1.setInt(1, qnaNo);
+			//System.out.println(stmt1+" <-- stmt1");
+			rs1 = stmt1.executeQuery();
+			//System.out.println(rs1+" <-- rs1");
+			QnA qna = new QnA();
+			if (rs1.next()) {
+				qna.qnaNo = rs1.getInt("qna_no");
+				qna.qnaTitle = rs1.getString("qna_title");
+				qna.qnaContent = rs1.getString("qna_content");
+				qna.qnaUser = rs1.getString("qna_user");
+				qna.qnaDate = rs1.getString("qna_date");
+			}
+			
+			System.out.println(request.getRequestURI() + request.getQueryString());
 	%>
 		<!-- 베너 -->
 		<div>
@@ -177,10 +174,10 @@
 					<%
 						// select comment_no, comment from qna_comment where qna_no=
 						// limit ?,?
-						PreparedStatement stmt2 = conn.prepareStatement(
+						stmt2 = conn.prepareStatement(
 								"select comment_no, qna_no, comment, comment_date, comment_user from employees_comment where qna_no=? order by comment_no desc");
 						stmt2.setInt(1, qnaNo);
-						ResultSet rs2 = stmt2.executeQuery();
+						rs2 = stmt2.executeQuery();
 						ArrayList<Comment> list = new ArrayList<Comment>();
 		
 						while (rs2.next()) {
@@ -257,5 +254,14 @@
 				</div>
 			</div>
 		</div>
+		<%
+		} finally{
+			rs2.close();
+			stmt2.close();
+			rs1.close();
+			stmt1.close();
+			conn.close();
+		}
+		%>
 	</body>
 </html>

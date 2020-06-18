@@ -22,14 +22,23 @@
 	System.out.println(qnaContent+" <-- qnaContent");
 	
 	Class.forName("org.mariadb.jdbc.Driver");
-	Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-	System.out.println(conn+" <-- conn");
-	PreparedStatement stmt = conn.prepareStatement("Update employees_qna set qna_title=?, qna_content=? where qna_no=?");
-	stmt.setString(1, qnaTitle);
-	stmt.setString(2, qnaContent);
-	stmt.setInt(3, qnaNo);
-	System.out.println(stmt+" <-- stmt");
-	ResultSet rs= stmt.executeQuery();
-	System.out.println(rs+" <-- rs");
-	response.sendRedirect(request.getContextPath()+"/qna/selectQna.jsp?qnaNo="+qnaNo+"&currentPage="+currentPage+"&selectMenu="+selectMenu+"&searchWord="+searchWord+"&rowPerPage="+rowPerPage);
+	Connection conn = null;
+	PreparedStatement stmt = null;
+	ResultSet rs = null;
+	try{
+		conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+		System.out.println(conn+" <-- conn");
+		stmt = conn.prepareStatement("Update employees_qna set qna_title=?, qna_content=? where qna_no=?");
+		stmt.setString(1, qnaTitle);
+		stmt.setString(2, qnaContent);
+		stmt.setInt(3, qnaNo);
+		System.out.println(stmt+" <-- stmt");
+		rs = stmt.executeQuery();
+		System.out.println(rs+" <-- rs");
+		response.sendRedirect(request.getContextPath()+"/qna/selectQna.jsp?qnaNo="+qnaNo+"&currentPage="+currentPage+"&selectMenu="+selectMenu+"&searchWord="+searchWord+"&rowPerPage="+rowPerPage);
+	} finally{
+		rs.close();
+		stmt.close();
+		conn.close();
+	}
 %>

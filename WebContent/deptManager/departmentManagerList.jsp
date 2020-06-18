@@ -50,46 +50,53 @@
 		
 		//2.0 db설정
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		//2. 현재페이지의departments테이블 행들
-		String query = "SELECT a.emp_no, CONCAT(b.first_name,' ',b.last_name) as name, a.dept_no, c.dept_name, a.from_date, a.to_date ";
-			query += "FROM employees_dept_manager a ";
-			query += "INNER JOIN employees_employees b ON a.emp_no = b.emp_no ";
-			query += "INNER JOIN employees_departments c ON a.dept_no = c.dept_no ";
-			query += "ORDER BY a.to_date desc ";
-			query += "LIMIT ?, ?";
-		PreparedStatement stmt1 = conn.prepareStatement(query);
-		stmt1.setInt(1, beginRow); // 한페이지에 몇개씩?
-		stmt1.setInt(2, rowPerPage); // 행을 어디서부터 출력할 것인가?
-		ResultSet rs1= stmt1.executeQuery();
-		//System.out.println(stmt1+" <-- stmt1");
-		//System.out.println(rs1+" <-- rs");
-		ArrayList<DepartmentManager> list= new ArrayList<DepartmentManager>();// 동적배열 list
-		while(rs1.next()){
-			DepartmentManager b = new DepartmentManager();
-			b.empNo = rs1.getInt("a.emp_no");
-			b.name = rs1.getString("name");
-			b.deptNo = rs1.getString("a.dept_no");
-			b.deptName = rs1.getString("c.dept_name");
-			b.fromDate = rs1.getString("a.from_date");
-			b.toDate = rs1.getString("a.to_date");
-			list.add(b); //b를 list에 추가
-		}
-		// 창넘기기
-		int lastPage = 0;
-		int totalRow = 0;
-		PreparedStatement stmt2 = conn.prepareStatement("select count(*) from employees_dept_manager");
-		//System.out.println(stmt2+" <- stmt2");
-		ResultSet rs2 = stmt2.executeQuery();
-		if(rs2.next()){ //만약 다음페이지 값이 있다면
-			totalRow = rs2.getInt("count(*)"); // 데이터 총갯수
-		}
-		//System.out.println(totalRow+" <-- totalRow");
-		lastPage = totalRow / rowPerPage;
-		if(totalRow%rowPerPage!=0){ // 다음행에 출력할 데이터가 있다면
-			lastPage+=1; //마지막 페이지 하나 추가
-		}
-		//System.out.println(lastPage+" <-- lastPage");
+		Connection conn = null;
+		PreparedStatement stmt1 = null;
+		PreparedStatement stmt2 = null;
+		ResultSet rs1 = null;
+		ResultSet rs2 = null;
+		ArrayList<DepartmentManager> list = null;
+		try{
+			conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			//2. 현재페이지의departments테이블 행들
+			String query = "SELECT a.emp_no, CONCAT(b.first_name,' ',b.last_name) as name, a.dept_no, c.dept_name, a.from_date, a.to_date ";
+				query += "FROM employees_dept_manager a ";
+				query += "INNER JOIN employees_employees b ON a.emp_no = b.emp_no ";
+				query += "INNER JOIN employees_departments c ON a.dept_no = c.dept_no ";
+				query += "ORDER BY a.to_date desc ";
+				query += "LIMIT ?, ?";
+			stmt1 = conn.prepareStatement(query);
+			stmt1.setInt(1, beginRow); // 한페이지에 몇개씩?
+			stmt1.setInt(2, rowPerPage); // 행을 어디서부터 출력할 것인가?
+			rs1 = stmt1.executeQuery();
+			//System.out.println(stmt1+" <-- stmt1");
+			//System.out.println(rs1+" <-- rs");
+			list = new ArrayList<DepartmentManager>();// 동적배열 list
+			while(rs1.next()){
+				DepartmentManager b = new DepartmentManager();
+				b.empNo = rs1.getInt("a.emp_no");
+				b.name = rs1.getString("name");
+				b.deptNo = rs1.getString("a.dept_no");
+				b.deptName = rs1.getString("c.dept_name");
+				b.fromDate = rs1.getString("a.from_date");
+				b.toDate = rs1.getString("a.to_date");
+				list.add(b); //b를 list에 추가
+			}
+			// 창넘기기
+			int lastPage = 0;
+			int totalRow = 0;
+			stmt2 = conn.prepareStatement("select count(*) from employees_dept_manager");
+			//System.out.println(stmt2+" <- stmt2");
+			rs2 = stmt2.executeQuery();
+			if(rs2.next()){ //만약 다음페이지 값이 있다면
+				totalRow = rs2.getInt("count(*)"); // 데이터 총갯수
+			}
+			//System.out.println(totalRow+" <-- totalRow");
+			lastPage = totalRow / rowPerPage;
+			if(totalRow%rowPerPage!=0){ // 다음행에 출력할 데이터가 있다면
+				lastPage+=1; //마지막 페이지 하나 추가
+			}
+			//System.out.println(lastPage+" <-- lastPage");
 	%>
 		<!-- 베너 -->
 		<div>
@@ -183,5 +190,14 @@
 				</div>
 			</div>
 		</div>
+		<%
+		}finally{
+			rs2.close();
+			stmt2.close();
+			rs1.close();
+			stmt1.close();
+			conn.close();
+		}
+		%>
 	</body>
 </html>

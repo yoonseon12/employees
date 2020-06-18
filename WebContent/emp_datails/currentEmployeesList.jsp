@@ -68,100 +68,104 @@
 		}
 		int beginRow = (currentPage-1)*rowPerPage; // 데이터를 몇번째 부터 출력?
 				
-		//마리아디비 설정
+		//마리아디비 설정 
 		Class.forName("org.mariadb.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
-		//System.out.println(conn+" <--conn");
+		Connection conn =  null;
 		PreparedStatement stmt1 = null;
-		if(searchWord.equals("")){
-			String query="";
-			query += "SELECT emp_no, CONCAT(first_name, ' ', last_name) AS name, birth_date, gender, hire_date ";
-			query += "FROM employees_employees "; 
-			query += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
-			query += "WHERE to_date = '9999-01-01') ";
-			query += "ORDER BY emp_no limit ?,?;";
-			stmt1 = conn.prepareStatement(query);
-			stmt1.setInt(1,beginRow);
-			stmt1.setInt(2,rowPerPage);
-		} else if(selectMenu.equals("firstName")){
-			String query="";
-			query += "SELECT emp_no, CONCAT(first_name, ' ', last_name) AS name, birth_date, gender, hire_date ";
-			query += "FROM employees_employees "; 
-			query += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
-			query += "WHERE to_date = '9999-01-01') ";
-			query += "AND first_name LIKE ? ";
-			query += "ORDER BY emp_no limit ?,?;";
-			stmt1 = conn.prepareStatement(query);
-			stmt1.setString(1,"%"+searchWord+"%");
-			stmt1.setInt(2, beginRow);
-			stmt1.setInt(3, rowPerPage);
-		} else if(selectMenu.equals("lastName")){
-			String query="";
-			query += "SELECT emp_no, CONCAT(first_name, ' ', last_name) AS name, birth_date, gender, hire_date ";
-			query += "FROM employees_employees "; 
-			query += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
-			query += "WHERE to_date = '9999-01-01') ";
-			query += "AND last_name LIKE ? ";
-			query += "ORDER BY emp_no limit ?,?;";
-			stmt1 = conn.prepareStatement(query);
-			stmt1.setString(1,"%"+searchWord+"%");
-			stmt1.setInt(2, beginRow);
-			stmt1.setInt(3, rowPerPage);
-		}
-		//System.out.println(stmt1+" <-- stmt1");
-		ResultSet rs1 = stmt1.executeQuery();
-		// String 타입만 가질 수 있는 ArrayList를 만든다.
-		ArrayList<CurrentEmployees> list = new ArrayList<CurrentEmployees>();
-		while(rs1.next()){
-			CurrentEmployees a = new CurrentEmployees();
-			a.empNo = rs1.getInt("emp_no");
-			a.name = rs1.getString("name");
-			a.birthDate = rs1.getString("birth_date");
-			a.gender = rs1.getString("gender");
-			a.hireDate = rs1.getString("hire_date");
-			list.add(a);
-		}
-		//System.out.println(list.size()+" <-- list.size");
-		
-		// 마지막페이지 값 설정
-		int lastPage=0;
-		int totalRow = 0;
 		PreparedStatement stmt2 = null;
-		if(searchWord.equals("")){
-			String query2="";
-			query2 += "SELECT COUNT(*) ";
-			query2 += "FROM employees_employees "; 
-			query2 += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
-			query2 += "WHERE to_date = '9999-01-01')";
-			stmt2 = conn.prepareStatement(query2);
-		}else if(selectMenu.equals("firstName")){
-			String query2="";
-			query2 += "SELECT COUNT(*) ";
-			query2 += "FROM employees_employees "; 
-			query2 += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
-			query2 += "WHERE to_date = '9999-01-01') ";
-			query2 += "AND first_name LIKE ?";
-			stmt2 = conn.prepareStatement(query2);
-			stmt2.setString(1,"%"+searchWord+"%");
-		}else if(selectMenu.equals("lastName")){
-			String query2="";
-			query2 += "SELECT COUNT(*) ";
-			query2 += "FROM employees_employees "; 
-			query2 += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
-			query2 += "WHERE to_date = '9999-01-01') ";
-			query2 += "AND last_name LIKE ?";
-			stmt2 = conn.prepareStatement(query2);
-			stmt2.setString(1,"%"+searchWord+"%");
-		}
-		ResultSet rs2 = stmt2.executeQuery();
-		if(rs2.next()){
-			totalRow = rs2.getInt("count(*)");
-		}
-		//System.out.println(totalRow+" <-- totalRow");
-		lastPage = totalRow/rowPerPage;
-		if(totalRow%rowPerPage != 0){
-			lastPage+=1;
-		}
+		ResultSet rs1 = null;
+		ResultSet rs2 = null;
+		ArrayList<CurrentEmployees> list = null;
+		try{
+			conn = DriverManager.getConnection("jdbc:mariadb://localhost/yoonseon12", "yoonseon12", "java1004");
+			if(searchWord.equals("")){
+				String query="";
+				query += "SELECT emp_no, CONCAT(first_name, ' ', last_name) AS name, birth_date, gender, hire_date ";
+				query += "FROM employees_employees "; 
+				query += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
+				query += "WHERE to_date = '9999-01-01') ";
+				query += "ORDER BY emp_no limit ?,?;";
+				stmt1 = conn.prepareStatement(query);
+				stmt1.setInt(1,beginRow);
+				stmt1.setInt(2,rowPerPage);
+			} else if(selectMenu.equals("firstName")){
+				String query="";
+				query += "SELECT emp_no, CONCAT(first_name, ' ', last_name) AS name, birth_date, gender, hire_date ";
+				query += "FROM employees_employees "; 
+				query += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
+				query += "WHERE to_date = '9999-01-01') ";
+				query += "AND first_name LIKE ? ";
+				query += "ORDER BY emp_no limit ?,?;";
+				stmt1 = conn.prepareStatement(query);
+				stmt1.setString(1,"%"+searchWord+"%");
+				stmt1.setInt(2, beginRow);
+				stmt1.setInt(3, rowPerPage);
+			} else if(selectMenu.equals("lastName")){
+				String query="";
+				query += "SELECT emp_no, CONCAT(first_name, ' ', last_name) AS name, birth_date, gender, hire_date ";
+				query += "FROM employees_employees "; 
+				query += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
+				query += "WHERE to_date = '9999-01-01') ";
+				query += "AND last_name LIKE ? ";
+				query += "ORDER BY emp_no limit ?,?;";
+				stmt1 = conn.prepareStatement(query);
+				stmt1.setString(1,"%"+searchWord+"%");
+				stmt1.setInt(2, beginRow);
+				stmt1.setInt(3, rowPerPage);
+			}
+			//System.out.println(stmt1+" <-- stmt1");
+			rs1 = stmt1.executeQuery();
+			// String 타입만 가질 수 있는 ArrayList를 만든다.
+			list = new ArrayList<CurrentEmployees>();
+			while(rs1.next()){
+				CurrentEmployees a = new CurrentEmployees();
+				a.empNo = rs1.getInt("emp_no");
+				a.name = rs1.getString("name");
+				a.birthDate = rs1.getString("birth_date");
+				a.gender = rs1.getString("gender");
+				a.hireDate = rs1.getString("hire_date");
+				list.add(a);
+			}
+			//System.out.println(list.size()+" <-- list.size");
+			
+			// 마지막페이지 값 설정
+			int lastPage=0;
+			int totalRow = 0;
+			if(searchWord.equals("")){
+				String query2="";
+				query2 += "SELECT COUNT(*) ";
+				query2 += "FROM employees_employees "; 
+				query2 += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
+				query2 += "WHERE to_date = '9999-01-01')";
+				stmt2 = conn.prepareStatement(query2);
+			}else if(selectMenu.equals("firstName")){
+				String query2="";
+				query2 += "SELECT COUNT(*) ";
+				query2 += "FROM employees_employees "; 
+				query2 += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
+				query2 += "WHERE to_date = '9999-01-01') ";
+				query2 += "AND first_name LIKE ?";
+				stmt2 = conn.prepareStatement(query2);
+				stmt2.setString(1,"%"+searchWord+"%");
+			}else if(selectMenu.equals("lastName")){
+				String query2="";
+				query2 += "SELECT COUNT(*) ";
+				query2 += "FROM employees_employees "; 
+				query2 += "WHERE emp_no IN(SELECT emp_no FROM employees_dept_emp "; 
+				query2 += "WHERE to_date = '9999-01-01') ";
+				query2 += "AND last_name LIKE ?";
+				stmt2 = conn.prepareStatement(query2);
+				stmt2.setString(1,"%"+searchWord+"%");
+			}
+			rs2 = stmt2.executeQuery();
+			if(rs2.next()){
+				totalRow = rs2.getInt("count(*)");
+			}
+			//System.out.println(totalRow+" <-- totalRow");
+			lastPage = totalRow/rowPerPage;
+			if(totalRow%rowPerPage != 0){
+				lastPage+=1;
+			}
 		%>
 		<!-- 베너 -->
 		<div>
@@ -260,6 +264,15 @@
 					</div>
 				</div>
 			</div>	
-		</div>	
+		</div>
+		<%
+			}finally{
+				rs2.close();
+				stmt2.close();
+				rs1.close();
+				stmt1.close();
+				conn.close();
+			}
+		%>
 	</body>
 </html>
