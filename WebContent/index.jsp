@@ -17,13 +17,16 @@
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 		<style>
 			.main{
-				margin: 30px auto ;
-				padding : 20px;
-				width: 900px;
+				margin: 50px auto ;
+				padding : 30px 20px;
+				width: 1000px;
 				border : 1px solid #343A40;
 			}
 			p{
 				font-weight: bold;
+			}
+			img{
+				margin : 0px 15px;
 			}
 		</style>	  	
 	</head>
@@ -52,33 +55,82 @@
 					<span style="font-size:20px;"><strong>개발 환경</strong></span>
 				</div>
 				<div>
-					<div class="row" style="margin-bottom: 40px;">
-						<div class="col-sm-6 text-center">
-							<img width='150' height='150' src="<%=request.getContextPath()%>/imgs/java.jpg">
+					<div class="row text-center" style="margin-bottom: 40px;">
+						<div class="col-sm-2">
 							<div>
-								<span>JAVA 1.80_241</span>
+								<h4>Language</h4>
+							</div>
+							<div>
+								<div>
+									JAVA <small>v.1.8</small>
+								</div>
 							</div>
 						</div>
-						<div class="col-sm-6 text-center">
-							<img width='150' height='150' src="<%=request.getContextPath()%>/imgs/eclipse.jpg">
+						<div class="col-sm-2">
 							<div>
-								<span>ECLIPSE 4.14.0</span>
+								<h4>Front Skill</h4>
 							</div>
-						</div>	
+							<div>
+								<div>
+									HTML5
+								</div>
+								<div>
+									CSS
+								</div>
+								<div>
+									BootStrap <small>B4</small>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-2">
+							<div>
+								<h4>Back Skill</h4>
+							</div>
+							<div>
+								JSP
+							</div>
+						</div>
+						<div class="col-sm-2">
+							<div>
+								<h4>DB</h4>
+							</div>
+							<div>
+								MariaDB <small>v.10.4</small>
+							</div>
+						</div>
+						<div class="col-sm-2">
+							<div>
+								<h4>Tool</h4>
+							</div>
+							<div>
+								<div>
+									Eclipse<small> v.4.14</small>
+								</div>
+								<div>
+									HeidiSQL
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-2">
+							<div>
+								<h4>Web Server</h4>
+							</div>
+							<div>
+								Tomcat<small> v.9</small>
+							</div>
+						</div>
 					</div>
-					<div class="row">
-						<div class="col-sm-6 text-center">
-							<img width='150' height='150' src="<%=request.getContextPath()%>/imgs/mariadb.jpg">
-							<div>
-								<span>MARIA DB 10.4</span>
-							</div>
-						</div>
-						<div class="col-sm-6 text-center">
-							<img width='150' height='150' src="<%=request.getContextPath()%>/imgs/tomcat.jpg">
-							<div>
-								<span>APACHE-TOMCAT 9.0.30</span>
-							</div>
-						</div>
+					<br>
+					<br>
+					<div class="text-center">
+						<img width='80' height='80' src="<%=request.getContextPath()%>/imgs/java.jpg">
+						<img width='80' height='80' src="<%=request.getContextPath()%>/imgs/html5.jpg">
+						<img width='80' height='80' src="<%=request.getContextPath()%>/imgs/bootstrap.jpg">
+						<img width='80' height='80' src="<%=request.getContextPath()%>/imgs/jsp.jpg">
+						<img width='80' height='80' src="<%=request.getContextPath()%>/imgs/mariadb.jpg">
+						<img width='80' height='80' src="<%=request.getContextPath()%>/imgs/eclipse.jpg">
+						<img width='80' height='80' src="<%=request.getContextPath()%>/imgs/heidisql.jpg">
+						<img width='80' height='80' src="<%=request.getContextPath()%>/imgs/tomcat.jpg">
 					</div>
 				</div>
 			</div>

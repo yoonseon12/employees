@@ -62,9 +62,9 @@
 					<table class="table">
 						<tbody>
 							<tr class="lineHeight">
-								<td rowspan="3"><img
-									src="<%=request.getContextPath()%>/imgs/img1.jpg" width="220"
-									height="280"></td>
+								<td rowspan="3">
+									<img src="<%=request.getContextPath()%>/imgs/about.jpg" width="220" height="280">
+								</td>
 								<th style="vertical-align: middle;"rowspan="2" class="bg-light text-dark">성명</th>
 								<td>(한글) 이윤선</td>
 								<th class="bg-light text-dark">생년월일</th>
